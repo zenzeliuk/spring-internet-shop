@@ -7,31 +7,20 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "orders")
+@Table(name = "brandes")
 @Entity
-public class Order implements Serializable {
+public class Brand implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User userId;
-
-    @OneToMany(mappedBy = "orderId")
-    private Set<Cart> carts = new HashSet<>();
-
-    @Column(name = "status_id")
-    @Enumerated(EnumType.ORDINAL)
-    private Status status;
-
+    @Column(name = "name", nullable = false)
+    private String name;
 }

@@ -9,33 +9,39 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "carts")
+@Table(name = "items")
 @Entity
-public class Cart implements Serializable {
+public class Item implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "order_id")
-    private Order orderId;
+    @OneToMany(mappedBy = "itemId")
+    private Set<Cart> carts = new HashSet<>();
 
-    @ManyToOne
-    @JoinColumn(name = "item_id")
-    private Item itemId;
-
-    @Column(name = "price", nullable = false)
-    private BigDecimal price;
+    @OneToOne(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    private ItemDetails itemDetails;
 
     @Column(name = "count", nullable = false, columnDefinition = "INT UNSIGNED")
     private Integer count;
+
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @Column(name = "image", nullable = false)
+    private String image;
+
+    @Column(name = "price", nullable = false)
+    private BigDecimal price;
 
     @Column(name = "create_time", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createTime;

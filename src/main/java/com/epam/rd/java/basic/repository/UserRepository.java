@@ -1,7 +1,13 @@
 package com.epam.rd.java.basic.repository;
 
 import com.epam.rd.java.basic.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-public interface UserRepository extends CrudRepository<User, Long> {
+import java.util.Optional;
+
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+    User getByLogin(String login);
 }

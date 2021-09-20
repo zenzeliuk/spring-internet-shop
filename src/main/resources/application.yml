@@ -13,3 +13,5 @@ spring:
       connectionTimeout: 20000
       maximumPoolSize: 5000
       driver-class-name: "com.mysql.cj.jdbc.Driver"
+server:
+  port: 8081
