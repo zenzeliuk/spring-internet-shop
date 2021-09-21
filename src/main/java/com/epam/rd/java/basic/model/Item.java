@@ -28,10 +28,10 @@ public class Item implements Serializable {
     @OneToMany(mappedBy = "itemId")
     private Set<Cart> carts = new HashSet<>();
 
-    @OneToOne(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @OneToOne(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private ItemDetails itemDetails;
 
-    @Column(name = "count", nullable = false, columnDefinition = "INT UNSIGNED")
+    @Column(name = "count", columnDefinition = "INT UNSIGNED")
     private Integer count;
 
     @Column(name = "name", nullable = false)

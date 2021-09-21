@@ -3,10 +3,7 @@ package com.epam.rd.java.basic.service;
 import com.epam.rd.java.basic.model.Item;
 import com.epam.rd.java.basic.model.ItemDetails;
 
-import java.util.List;
+public interface ItemDetailsService {
 
-public interface ItemService {
-
-    List<Item> findAllByCategoryId(Long categoryId);
-    Item save(Item item);
+    ItemDetails save(Item item, String category_id, String brand_id, String color_id);
 }

@@ -15,7 +15,7 @@
 
 <section>
     <div class="container">
-        <div class="text-muted mt-5 mb-5 text-center display-4">CATEGORIES</div>
+        <div class="text-muted mt-5 mb-5 text-center display-4">Категорії</div>
         <hr/>
         <div class="row">
 
@@ -24,7 +24,7 @@
                     <div class="card-body">
                         <img th:src="${category.image}">
                         <hr/>
-                        <a th:href="'/item?category_id='+ ${category.id}" th:text="${category.name}" class="card-title display-1"
+                        <a th:href="'/items?category_id='+ ${category.id}" th:text="${category.name}" class="card-title display-1"
                            style="font-size:3.0vmin;"></a>
                     </div>
                 </div>
