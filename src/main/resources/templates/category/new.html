@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <!--    main, header-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+<br/><br/>
+<div class="container">
+    <form th:method="POST" th:action="@{/categories}" th:object="${category}">
+
+        <div class="mb-3">
+            <label for="name" class="form-label" th:text="#{name-category}"></label>
+            <input type="text" th:field="*{name}" id="name" class="form-control" th:placeholder="#{enter-name}"/>
+        </div>
+
+        <div class="mb-3">
+            <label for="image" class="form-label" th:text="#{image-link}"></label>
+            <input type="text" th:field="*{image}" id="image" class="form-control" placeholder="https://..."/>
+        </div>
+
+        <input type="submit" th:value="#{create}" class="btn btn-outline-primary"/>
+    </form>
+</div>
+
+<footer th:insert="blocks/footer :: footer"></footer>
+</body>
+</html>

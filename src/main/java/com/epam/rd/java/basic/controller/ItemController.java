@@ -53,8 +53,6 @@ public class ItemController {
                          @RequestParam String category_id,
                          @RequestParam String brand_id,
                          @RequestParam String color_id) {
-
-        System.out.println();
         item.setCount(1);
         Item savedItem = itemService.save(item);
         itemDetailsService.save(savedItem, category_id, brand_id, color_id);

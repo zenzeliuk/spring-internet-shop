@@ -1,5 +1,15 @@
 <div th:fragment="footer">
     <footer class="py-3 my-4">
+        <div th:if="${#locale.toString() == 'ukr'}">
+            <a th:href="@{${#httpServletRequest.requestURI}(lang='en')}">
+                <p class="text-center text-muted">EN</p>
+            </a>
+        </div>
+        <div th:if="${#locale.toString() == 'en'}">
+            <a th:href="@{${#httpServletRequest.requestURI}(lang='ukr')}">
+                <p class="text-center text-muted">UKR</p>
+            </a>
+        </div>
         <p class="text-center text-muted">© 2021 Company, Inc</p>
     </footer>
 </div>

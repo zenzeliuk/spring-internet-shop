@@ -13,42 +13,45 @@
 <div class="container">
     <form th:method="POST" th:action="@{/items}" th:object="${item}">
         <div class="mb-3">
-            <label for="name" class="form-label">Назва товару</label>
-            <input type="text" th:field="*{name}" id="name" class="form-control" placeholder="Введіть назву товару"/>
+            <label for="name" class="form-label" th:text="#{name-product}"></label>
+            <input type="text" th:field="*{name}" id="name" class="form-control" th:placeholder="#{enter-name}"/>
         </div>
         <div class="mb-3">
-            <label for="image" class="form-label">Посилання на картинку</label>
+            <label for="image" class="form-label" th:text="#{image-link}"></label>
             <input type="text" th:field="*{image}" id="image" class="form-control" placeholder="https://..."/>
         </div>
         <div class="mb-3">
-            <label for="price" class="form-label">Ціна товару</label>
-            <input type="number" th:field="*{price}" id="price" class="form-control" placeholder="Введіть ціну товару"/>
+            <label for="price" class="form-label" th:text="#{price}"></label>
+            <input type="number" th:field="*{price}" id="price" class="form-control" th:placeholder="#{enter-price}"/>
         </div>
         <div class="mb-3">
-            <label for="category">Виберіть категорію</label>
+            <label for="category" th:text="#{select-category}"></label>
             <select name="category_id" class="form-select" id="category">
                 <option th:each="category : ${categories}"
                         th:value="${category.id}"
                         th:text="${category.name}"></option>
             </select>
+            <a th:href="@{/categories/new}" class="btn btn-outline-primary" th:text="#{create-category}"></a>
         </div>
 
         <div class="mb-3">
-            <label for="brand">Виберіть бренд</label>
+            <label for="brand" th:text="#{select-brand}"></label>
             <select name="brand_id" class="form-select" id="brand">
                 <option th:each="brand : ${brandes}"
                         th:value="${brand.id}"
                         th:text="${brand.name}"></option>
             </select>
+            <a th:href="@{/brands/new}" class="btn btn-outline-primary" th:text="#{create-brand}"></a>
         </div>
 
         <div class="mb-3">
-            <label for="color">Виберіть колір</label>
+            <label for="color" th:text="#{select-color}"></label>
             <select name="color_id" class="form-select" id="color">
                 <option th:each="color : ${colors}"
                         th:value="${color.id}"
                         th:text="${color.name}"></option>
             </select>
+            <a th:href="@{/colors/new}" class="btn btn-outline-primary" th:text="#{create-color}"></a>
         </div>
 
         <input type="submit" value="Зберегти" class="btn btn-primary btn-lg"/>

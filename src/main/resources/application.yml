@@ -1,4 +1,7 @@
 spring:
+  messages:
+    basename: local/pagecontent
+    encoding: UTF-8
   profiles:
     active: dev
   jpa:
