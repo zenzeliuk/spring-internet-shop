@@ -18,4 +18,9 @@ public class ColorServiceImpl implements ColorService {
     public List<Color> findAll() {
         return colorRepository.findAll();
     }
+
+    @Override
+    public Color save(Color color) {
+        return colorRepository.save(color);
+    }
 }

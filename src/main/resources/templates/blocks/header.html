@@ -16,9 +16,14 @@
 
                 <div class="text-end">
                     <button type="button" class="btn btn-outline-light me-2" th:text="#{login}"
-                            onclick="window.location.href='/login'"></button>
+                            onclick="window.location.href='/auth/login'"></button>
                     <button type="button" class="btn btn-warning" th:text="#{sign-up}"
-                            onclick="window.location.href='/sign-up'"></button>
+                            onclick="window.location.href='/auth/sign-up'"></button>
+<!--                    <form method="POST" action="/auth/logout">-->
+<!--                        <button type="submit" class="btn btn-warning" th:text="#{logout}"></button>-->
+<!--                    </form>-->
+                    <button type="button" class="btn btn-warning" th:text="#{logout}"
+                            onclick="window.location.href='/auth/logout'"></button>
                 </div>
             </div>
         </div>

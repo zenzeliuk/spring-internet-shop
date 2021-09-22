@@ -7,9 +7,6 @@ import com.epam.rd.java.basic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.rmi.server.ServerCloneException;
-import java.util.Optional;
-
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -23,8 +20,7 @@ public class UserServiceImpl implements UserService {
     public User create(User user) throws ServiceException {
         if (isNull(user.getId()) &&
                 nonNull(user.getLogin()) &&
-                nonNull(user.getPassword()) &&
-                nonNull(user.getUserDetails())
+                nonNull(user.getPassword())
         ) {
             return userRepository.save(user);
         }

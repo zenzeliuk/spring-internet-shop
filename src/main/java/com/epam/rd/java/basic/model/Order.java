@@ -30,8 +30,8 @@ public class Order implements Serializable {
     @OneToMany(mappedBy = "orderId")
     private Set<Cart> carts = new HashSet<>();
 
-    @Column(name = "status_id")
-    @Enumerated(EnumType.ORDINAL)
-    private Status status;
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private StatusOrder status;
 
 }

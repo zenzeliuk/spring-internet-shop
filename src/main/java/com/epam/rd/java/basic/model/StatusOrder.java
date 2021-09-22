@@ -1,5 +1,5 @@
 package com.epam.rd.java.basic.model;
 
-public enum Status {
+public enum StatusOrder {
     OPEN, REGISTERED, PAID, CANCELED
 }

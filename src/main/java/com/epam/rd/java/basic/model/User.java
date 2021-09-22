@@ -30,16 +30,25 @@ public class User implements Serializable {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY, optional = false)
-    private UserDetails userDetails;
+    @Column(name = "first_name")
+    private String firsName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "email")
+    private String email;
+
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "role")
+    private Role role;
+
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "status")
+    private StatusUser statusUser;
 
     @OneToMany (mappedBy = "userId")
     private Set<Order> orders = new HashSet<>();
-
-    @Column(name = "role_id")
-    @Enumerated(EnumType.ORDINAL)
-    private Role role;
 
 }
 

@@ -3,35 +3,38 @@ package com.epam.rd.java.basic.controller;
 import com.epam.rd.java.basic.model.*;
 import com.epam.rd.java.basic.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
-import java.sql.Timestamp;
 import java.util.List;
 
 @Controller
 @RequestMapping(value = "/items")
 public class ItemController {
 
+    private final ItemService itemService;
+    private final CategoryService categoryService;
+    private final BrandService brandService;
+    private final ColorService colorService;
+    private final ItemDetailsService itemDetailsService;
+
     @Autowired
-    private ItemService itemService;
-    @Autowired
-    private CategoryService categoryService;
-    @Autowired
-    private BrandService brandService;
-    @Autowired
-    private ColorService colorService;
-    @Autowired
-    private ItemDetailsService itemDetailsService;
+    public ItemController(ItemService itemService, CategoryService categoryService, BrandService brandService, ColorService colorService, ItemDetailsService itemDetailsService) {
+        this.itemService = itemService;
+        this.categoryService = categoryService;
+        this.brandService = brandService;
+        this.colorService = colorService;
+        this.itemDetailsService = itemDetailsService;
+    }
 
     @GetMapping()
     public String items(@RequestParam String category_id, Model model) {
         Long categoryId = Long.valueOf(category_id);
         List<Item> itemList = itemService.findAllByCategoryId(categoryId);
         model.addAttribute("items", itemList);
-        return "items";
+        return "item/items";
     }
 
     @GetMapping(value = "/new")
