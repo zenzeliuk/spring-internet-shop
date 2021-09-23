@@ -1,4 +1,4 @@
-package com.epam.rd.java.basic.controller;
+package com.epam.rd.java.basic.controller.item;
 
 import com.epam.rd.java.basic.model.Brand;
 import com.epam.rd.java.basic.service.BrandService;

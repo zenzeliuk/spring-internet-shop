@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link href="../../../webapp/css/item.css" th:href="@{/main/webapp/css/item.css}" rel="stylesheet"/>
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+
+<div class="container mt-5">
+    <table class="table">
+        <thead>
+        <tr>
+            <th id="id" scope="col">Id</th>
+            <th id="login" scope="col">Login</th>
+            <th id="first_name" scope="col">First name</th>
+            <th id="last_name" scope="col">Last name</th>
+            <th id="email" scope="col">Email</th>
+            <th id="role" scope="col">Role</th>
+            <th id="status" scope="col">Status</th>
+            <th id="change_role" scope="col">Change role</th>
+            <th id="change_status" scope="col">Change status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td headers="id" th:text="${user.id}"></td>
+            <td headers="login" th:text="${user.login}"></td>
+            <td headers="first_name" th:text="${user.firstName}"></td>
+            <td headers="last_name" th:text="${user.lastName}"></td>
+            <td headers="email" th:text="${user.email}"></td>
+            <td headers="role" th:text="${user.role}"></td>
+            <td headers="status" th:text="${user.status}"></td>
+
+            <form action="/admin/change-role" method="POST">
+                <input type="text" name="id" th:value="${user.id}" hidden>
+                <td headers="change_role" th:if="${user.role =='[USER]'}">
+                    <button type="submit">SET ADMIN</button>
+                </td>
+                <td headers="change_role" th:if="${user.role =='[ADMIN]'}">
+                    <button type="submit">SET USER</button>
+                </td>
+            </form>
+
+            <form action="/admin/change-status" method="POST">
+                <input type="text" name="id" th:value="${user.id}" hidden>
+                <td headers="change_status" th:if="${user.status =='ACTIVE'}">
+                    <button type="submit">BLOCK</button>
+                </td>
+                <td headers="change_status" th:if="${user.status =='BLOCKED'}">
+                    <button type="submit">UNBLOCK</button>
+                </td>
+            </form>
+
+
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<footer th:insert="blocks/footer :: footer"></footer>
+</body>
+</html>

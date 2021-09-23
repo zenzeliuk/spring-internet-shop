@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
-    <link rel="stylesheet" href="/static/css/item.css">
+    <link href="../../../webapp/css/item.css" th:href="@{/main/webapp/css/item.css}" rel="stylesheet"/>
 </head>
 <body>
 <header th:insert="blocks/header :: header"></header>
@@ -15,7 +15,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="card-img-actions">
-                        <img th:src="${item.image}" class="card-img img-fluid" width="96" height="350" alt="">
+                        <img th:src="${item.image}" class="card-img img-fluid" alt="">
                     </div>
                 </div>
                 <div class="card-body bg-light text-center">
@@ -23,9 +23,13 @@
                         <h6 th:text="${item.name}" class="font-weight-semibold mb-2"></h6>
                     </div>
                     <h3 th:text="${item.price} + ' UAH'" class="mb-0 font-weight-semibold"></h3>
-                    <button type="button" class="btn bg-cart">
-                        <i class="fa fa-cart-plus mr-2"></i> Add to cart
-                    </button>
+                    <form method="POST" action="/carts/add">
+                        <input type="text" name="item_id" th:value="${item.id}" hidden>
+                        <button type="submit" class="btn bg-cart">
+                            <i class="fa fa-cart-plus mr-2"></i> Add to cart
+                        </button>
+                    </form>
+
                 </div>
             </div>
         </div>

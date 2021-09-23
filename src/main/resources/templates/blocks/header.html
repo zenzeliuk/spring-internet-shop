@@ -14,16 +14,22 @@
                     <li><a href="#" class="nav-link px-2 text-white" th:text="#{about}"></a></li>
                 </ul>
 
-                <div class="text-end">
+                <div class="text-end" sec:authorize="isAnonymous()">
                     <button type="button" class="btn btn-outline-light me-2" th:text="#{login}"
-                            onclick="window.location.href='/auth/login'"></button>
+                            onclick="window.location.href='/login'"></button>
                     <button type="button" class="btn btn-warning" th:text="#{sign-up}"
-                            onclick="window.location.href='/auth/sign-up'"></button>
-<!--                    <form method="POST" action="/auth/logout">-->
+                            onclick="window.location.href='/sign-up'"></button>
+<!--                    <form method="POST" action="/logout">-->
 <!--                        <button type="submit" class="btn btn-warning" th:text="#{logout}"></button>-->
 <!--                    </form>-->
+<!--                    <button type="button" class="btn btn-warning" th:text="#{logout}"-->
+<!--                            onclick="window.location.href='/logout'"></button>-->
+                </div>
+                <div class="text-end" sec:authorize="isAuthenticated()">
+                    <button type="button" class="btn btn-outline-light me-2" th:text="${#authentication.name}"
+                            onclick="window.location.href='/user'"></button>
                     <button type="button" class="btn btn-warning" th:text="#{logout}"
-                            onclick="window.location.href='/auth/logout'"></button>
+                            onclick="window.location.href='/logout'"></button>
                 </div>
             </div>
         </div>

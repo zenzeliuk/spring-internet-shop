@@ -1,27 +1,38 @@
 <!DOCTYPE html>
-<html lang="en"><head>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
     <title>Please sign in</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-    <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link type="text/css" th:href="@{/css/sign-up.css}" rel="stylesheet"/>
 </head>
 <body>
-<div class="container">
-    <form class="form-signin" method="post" action="/auth/login">
-        <h2 class="form-signin-heading">Please sign in</h2>
-        <p>
-            <label for="username" class="sr-only">Username</label>
-            <input type="text" id="username" name="username" class="form-control" placeholder="Username" required="" autofocus="">
-        </p>
-        <p>
-            <label for="password" class="sr-only">Password</label>
-            <input type="password" id="password" name="password" class="form-control" placeholder="Password" required="">
-        </p>
-        <input name="_csrf" type="hidden" value="e22936c1-024e-4cac-bedf-7e66e693f5f0">
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+
+<section class="get-in-touch">
+    <h1 class="title" th:text="#{sign-in}"></h1>
+
+    <form class="contact-form row" method="post" action="/login">
+
+        <div class="form-field col-lg-6">
+            <input name="username" id="username" class="input-text js-input" type="text" required>
+            <label class="label" for="username" th:text="#{logi}"></label>
+        </div>
+
+        <div class="form-field col-lg-6 ">
+            <input name="password" id="password" class="input-text js-input" type="password" required>
+            <label class="label" for="password" th:text="#{password}"></label>
+        </div>
+
+        <div class="form-field col-lg-12">
+            <input class="submit-btn" type="submit" th:value="#{submit}">
+        </div>
     </form>
-</div>
-</body></html>
+</section>
+
+<footer th:insert="blocks/footer :: footer"></footer>
+
+</body>
+</html>

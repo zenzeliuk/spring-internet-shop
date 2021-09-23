@@ -1,9 +1,16 @@
 package com.epam.rd.java.basic.service;
 
-import com.epam.rd.java.basic.exception.ServiceException;
 import com.epam.rd.java.basic.model.User;
+import com.epam.rd.java.basic.model.dto.UserDTO;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
-public interface UserService {
+import java.util.List;
 
-    User create(User user) throws ServiceException;
+public interface UserService extends UserDetailsService {
+
+    UserDetails loadUserByUsername(String login);
+    List<UserDTO> findAll();
+    User findById(String id);
+    User save(User user);
 }

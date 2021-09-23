@@ -1,9 +1,10 @@
-package com.epam.rd.java.basic.controller;
+package com.epam.rd.java.basic.controller.item;
 
 import com.epam.rd.java.basic.model.*;
 import com.epam.rd.java.basic.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
