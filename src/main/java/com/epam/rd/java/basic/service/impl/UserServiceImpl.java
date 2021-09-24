@@ -6,6 +6,8 @@ import com.epam.rd.java.basic.model.mapper.UserMapper;
 import com.epam.rd.java.basic.repository.UserRepository;
 import com.epam.rd.java.basic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -24,8 +26,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDTO> findAll() {
-        return UserMapper.toUserDTOList(userRepository.findAll());
+    public Page<User> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 
     @Override

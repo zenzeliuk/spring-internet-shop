@@ -1,15 +1,25 @@
 package com.epam.rd.java.basic.controller.item;
 
-import com.epam.rd.java.basic.model.*;
+import com.epam.rd.java.basic.controller.util.Helper;
+import com.epam.rd.java.basic.model.Brand;
+import com.epam.rd.java.basic.model.Category;
+import com.epam.rd.java.basic.model.Color;
+import com.epam.rd.java.basic.model.Item;
 import com.epam.rd.java.basic.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.stream.IntStream;
 
 @Controller
 @RequestMapping(value = "/items")
@@ -31,12 +41,25 @@ public class ItemController {
     }
 
     @GetMapping()
-    public String items(@RequestParam String category_id, Model model) {
-        Long categoryId = Long.valueOf(category_id);
-        List<Item> itemList = itemService.findAllByCategoryId(categoryId);
-        model.addAttribute("items", itemList);
+    public String items(
+            @RequestParam(value = "categories", required = false) Integer categories,
+            Model model,
+            HttpServletRequest request,
+            @RequestParam(value = "size", required = false, defaultValue = "3") Integer size,
+            @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+            @RequestParam(value = "sort", required = false, defaultValue = "id") String sort
+    ) {
+        String paramName = "category";
+        List<String> paramCategory = Helper.getValues(request, paramName);
+        model.addAttribute("paramCategory", paramCategory);
+//        Page<Item> ii - itemService.findAllByCategoryIds()
+        Page<Item> itemsPage = itemService.findAllBy(
+                PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sort)));
+        model.addAttribute("itemsPage", itemsPage);
+        model.addAttribute("numbers", IntStream.range(0, itemsPage.getTotalPages()).toArray());
         return "item/items";
     }
+
 
     @GetMapping(value = "/new")
     public String newItem(Model model) {

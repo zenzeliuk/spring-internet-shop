@@ -25,6 +25,14 @@ public class Item implements Serializable {
     @Column(name = "id")
     private Long id;
 
+    @ManyToMany
+    @JoinTable(
+            name = "item_details",
+            joinColumns = {@JoinColumn (name = "item_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn (name = "category_id", referencedColumnName = "id")}
+    )
+    private Set<Category> categorySet = new HashSet<>();
+
     @OneToMany(mappedBy = "itemId")
     private Set<Cart> carts = new HashSet<>();
 

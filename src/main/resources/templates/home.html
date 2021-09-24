@@ -1,14 +1,26 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
     <!--    <link rel="stylesheet" href="/static/css/item.css">-->
+
 </head>
 <body>
 <header th:insert="blocks/header :: header"></header>
+
+
+<form action="/items" method="GET">
+
+    <a th:each="cat : ${categories}">
+        <input th:checked="${paramCategory.contains(cat.id.toString())}" type="checkbox" name="category"
+               th:value="${cat.id}"
+               th:text="${cat.name}">
+    </a>
+    <button type="submit">SUBMIT</button>
+</form>
 
 <!--<a sec:authorize="hasAuthority('ADMIN')">123213</a>-->
 <!--<a sec:authorize="isAuthenticated()">123213</a>-->
