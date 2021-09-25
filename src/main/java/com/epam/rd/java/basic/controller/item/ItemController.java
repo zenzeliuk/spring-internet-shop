@@ -18,7 +18,9 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Controller
@@ -41,25 +43,35 @@ public class ItemController {
     }
 
     @GetMapping()
-    public String items(
-            @RequestParam(value = "categories", required = false) Integer categories,
-            Model model,
-            HttpServletRequest request,
-            @RequestParam(value = "size", required = false, defaultValue = "3") Integer size,
-            @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
-            @RequestParam(value = "sort", required = false, defaultValue = "id") String sort
+    public String items(Model model,
+                        HttpServletRequest request,
+                        @RequestParam(value = "nameLike", required = false, defaultValue = "") String nameLike,
+                        @RequestParam(value = "priceFrom", required = false, defaultValue = "0") BigDecimal priceFrom,
+                        @RequestParam(value = "priceTo", required = false, defaultValue = "1000123") BigDecimal priceTo,
+                        @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+                        @RequestParam(value = "size", required = false, defaultValue = "6") Integer size,
+                        @RequestParam(value = "sortField", required = false, defaultValue = "id") String sortField,
+                        @RequestParam(value = "sortDir", required = false, defaultValue = "desc") String sortDir
+
     ) {
-        String paramName = "category";
-        List<String> paramCategory = Helper.getValues(request, paramName);
-        model.addAttribute("paramCategory", paramCategory);
-//        Page<Item> ii - itemService.findAllByCategoryIds()
-        Page<Item> itemsPage = itemService.findAllBy(
-                PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sort)));
-        model.addAttribute("itemsPage", itemsPage);
-        model.addAttribute("numbers", IntStream.range(0, itemsPage.getTotalPages()).toArray());
+        Page<Item> itemPage = itemService.getPage(nameLike, priceFrom, priceTo, page, size, sortField, sortDir, request);
+
+        //КАТЕГОРІЇ ДЛЯ ФІЛЬТРІВ
+        List<Category> categoryList = categoryService.findAll();
+        List<Brand> brandList = brandService.findAll();
+        List<Color> colorList = colorService.findAll();
+
+        //категорії для фільтрації
+        model.addAttribute("categories", categoryList);
+        model.addAttribute("brandes", brandList);
+        model.addAttribute("colors", colorList);
+
+        //список продуктів
+        model.addAttribute("itemsPage", itemPage);
+        //числа для пагінації
+        model.addAttribute("numbers", IntStream.range(1, itemPage.getTotalPages() + 1).toArray());
         return "item/items";
     }
-
 
     @GetMapping(value = "/new")
     public String newItem(Model model) {

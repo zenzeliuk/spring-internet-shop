@@ -11,17 +11,6 @@
 <body>
 <header th:insert="blocks/header :: header"></header>
 
-
-<form action="/items" method="GET">
-
-    <a th:each="cat : ${categories}">
-        <input th:checked="${paramCategory.contains(cat.id.toString())}" type="checkbox" name="category"
-               th:value="${cat.id}"
-               th:text="${cat.name}">
-    </a>
-    <button type="submit">SUBMIT</button>
-</form>
-
 <!--<a sec:authorize="hasAuthority('ADMIN')">123213</a>-->
 <!--<a sec:authorize="isAuthenticated()">123213</a>-->
 <!--<a sec:authorize="isAnonymous()">123213</a>-->
@@ -30,13 +19,12 @@
         <div class="text-muted mt-5 mb-5 text-center display-4" th:text="#{categories}"></div>
         <hr/>
         <div class="row">
-
             <div th:each="category : ${categories}" class="col-xs-6 col-sm-6 col-md-3 col-lg-3 p-2">
                 <div class="card p-3 shadow text-center border-0">
                     <div class="card-body">
                         <img th:src="${category.image}">
                         <hr/>
-                        <a th:href="'/items?category_id='+ ${category.id}" th:text="${category.name}"
+                        <a th:href="'/items?category='+ ${category.id}" th:text="${category.name}"
                            class="card-title display-1"
                            style="font-size:3.0vmin;"></a>
                     </div>

@@ -7,11 +7,21 @@ import java.util.stream.Collectors;
 
 public abstract class Helper {
 
-    public static List<String> getValues(HttpServletRequest request, String paramName) {
+    public static List<String> getValuesString(HttpServletRequest request, String paramName) {
         String[] paramValues = request.getParameterValues(paramName);
         if (paramValues == null) {
             paramValues = new String[0];
         }
         return Arrays.stream(paramValues).collect(Collectors.toList());
     }
+
+    public static List<Long> getValuesLong(HttpServletRequest request, String paramName) {
+        String[] paramValues = request.getParameterValues(paramName);
+        if (paramValues == null) {
+            paramValues = new String[0];
+        }
+        return Arrays.stream(paramValues).map(Long::parseLong).collect(Collectors.toList());
+    }
+
+
 }

@@ -10,8 +10,83 @@
 <body>
 <header th:insert="blocks/header :: header"></header>
 
+<form action="/items" method="GET"
+      th:with="urlBuilder = ${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest().build().getQuery()}">
 
+    <h4>CATEGORY</h4>
+    <a th:each="category : ${categories}">
+        <input type="checkbox" name="category"
+               th:if="${urlBuilder != null}"
+               th:checked="${urlBuilder.contains('category=' + category.id)}"
+               th:value="${category.id}"
+               th:text="${category.name}">
+        <input type="checkbox" name="category"
+               th:if="${urlBuilder == null}"
+               th:value="${category.id}"
+               th:text="${category.name}">
+    </a>
 
+    <h4>BRAND</h4>
+    <a th:each="brand : ${brandes}">
+        <input type="checkbox" name="brand"
+               th:if="${urlBuilder != null}"
+               th:checked="${urlBuilder.contains('brand=' + brand.id)}"
+               th:value="${brand.id}"
+               th:text="${brand.name}">
+        <input type="checkbox" name="brand"
+               th:if="${urlBuilder == null}"
+               th:value="${brand.id}"
+               th:text="${brand.name}">
+    </a>
+    <br/>
+
+    <h4>COLOR</h4>
+    <a th:each="color : ${colors}">
+        <input type="checkbox" name="color"
+               th:if="${urlBuilder != null}"
+               th:checked="${urlBuilder.contains('color=' + color.id)}"
+               th:value="${color.id}"
+               th:text="${color.name}">
+        <input type="checkbox" name="color"
+               th:if="${urlBuilder == null}"
+               th:value="${color.id}"
+               th:text="${color.name}">
+    </a>
+    <br/>
+    <h4>SORTING</h4>
+    <select name="sortField">
+        <option th:if="${urlBuilder != null}"
+                th:each="field : ${T(com.epam.rd.java.basic.controller.util.SortField).values()}"
+                th:selected="${urlBuilder.contains('sortField=' + field)}"
+                th:value="${field}"
+                th:text="${field.field}">
+        </option>
+        <option th:if="${urlBuilder == null}"
+                th:each="field : ${T(com.epam.rd.java.basic.controller.util.SortField).values()}"
+                th:value="${field}"
+                th:text="${field.field}">
+        </option>
+    </select>
+    <select name="sortDir">
+        <option th:if="${urlBuilder != null}"
+                th:each="dir : ${T(com.epam.rd.java.basic.controller.util.SortDir).values()}"
+                th:selected="${urlBuilder.contains('sortDir=' + dir)}"
+                th:value="${dir}"
+                th:text="${dir.dir}">
+        </option>
+        <option th:if="${urlBuilder == null}"
+                th:each="dir : ${T(com.epam.rd.java.basic.controller.util.SortDir).values()}"
+                th:value="${dir}"
+                th:text="${dir.dir}">
+        </option>
+    </select><br/>
+
+    <label for="priceFrom">Price from</label>
+    <input th:value="${#request.getParameter('priceFrom')}" name="priceFrom" id="priceFrom">
+    <label for="priceTo">Price to</label>
+    <input th:value="${#request.getParameter('priceTo')}" name="priceTo" id="priceTo">
+    <button type="submit">SUBMIT</button>
+</form>
 
 <nav aria-label="...">
     <ul class="pagination" th:if="${itemsPage.totalPages > 0 }">
@@ -19,12 +94,11 @@
             <a class="page-link">Pagination</a>
         </li>
         <li class="page-item" th:each="pageNumber : ${numbers}"
-            th:class="${pageNumber == itemsPage.number} ? 'page-item active'">
+            th:class="${pageNumber == itemsPage.number + 1} ? 'page-item active'">
             <a class="page-link"
-               th:href="@{'items?page=' + ${pageNumber}}"
-               th:text="${pageNumber + 1}">
-                <!--               th:href="@{${#httpServletRequest.requestURI}(page=${pageNumber})}"-->
-
+               th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}"
+               th:href="${urlBuilder.replaceQueryParam('page', pageNumber).build().toString()}"
+               th:text="${pageNumber}">
             </a>
         </li>
     </ul>
