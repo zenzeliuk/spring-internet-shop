@@ -19,6 +19,7 @@ import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ItemServiceImpl implements ItemService {
@@ -40,6 +41,14 @@ public class ItemServiceImpl implements ItemService {
     @Autowired
     private EntityManager entityManager;
 
+
+    @Override
+    public Optional<Item> findById(Long id) {
+        if (id == null) {
+            return Optional.empty();
+        }
+        return itemRepository.findById(id);
+    }
 
     @Override
     public Item save(Item item) {

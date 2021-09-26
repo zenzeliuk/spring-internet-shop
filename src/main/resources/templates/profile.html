@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Please sign up</title>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link type="text/css" th:href="@{/css/sign-up.css}" rel="stylesheet"/>
+</head>
+<body>
+
+<section class="get-in-touch">
+    <h1 class="title" th:text="#{sign-up}"></h1>
+
+    <form class="contact-form row" th:method="POST">
+
+        <div class="form-field col-lg-6">
+            <input th:value="${login}" name="login" id="login" class="input-text js-input" type="text" required>
+            <label class="label" for="login" th:text="#{logi}"></label>
+        </div>
+
+        <div class="form-field col-lg-6 ">
+            <input id="password" name="password" class="input-text js-input" type="password" required>
+            <label class="label" for="password" th:text="#{password}"></label>
+        </div>
+
+        <div class="form-field col-lg-6 ">
+            <input th:value="${firstName}" name="firstName" id="first-name" class="input-text js-input" type="text" required>
+            <label class="label" for="first-name" th:text="#{first-name}"></label>
+        </div>
+
+        <div class="form-field col-lg-6 ">
+            <input th:value="${lastName}" name="lastName" id="last-name" class="input-text js-input" type="text" required>
+            <label class="label" for="last-name" th:text="#{last-name}"></label>
+        </div>
+
+        <div class="form-field col-lg-12">
+            <input th:value="${email}" name="email" id="email" class="input-text js-input" type="email" required>
+            <label class="label" for="email" th:text="#{email}"></label>
+        </div>
+
+        <div class="form-field col-lg-12">
+            <input class="submit-btn" type="submit" th:value="#{submit}">
+        </div>
+    </form>
+</section>
+<footer th:insert="blocks/footer :: footer"></footer>
+</body>
+</html>

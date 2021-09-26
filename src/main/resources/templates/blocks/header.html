@@ -15,21 +15,34 @@
                 </ul>
 
                 <div class="text-end" sec:authorize="isAnonymous()">
-                    <button type="button" class="btn btn-outline-light me-2" th:text="#{login}"
-                            onclick="window.location.href='/login'"></button>
-                    <button type="button" class="btn btn-warning" th:text="#{sign-up}"
-                            onclick="window.location.href='/sign-up'"></button>
-<!--                    <form method="POST" action="/logout">-->
-<!--                        <button type="submit" class="btn btn-warning" th:text="#{logout}"></button>-->
-<!--                    </form>-->
-<!--                    <button type="button" class="btn btn-warning" th:text="#{logout}"-->
-<!--                            onclick="window.location.href='/logout'"></button>-->
+                    <button type="button" class="btn btn-outline-light me-2"
+                            th:text="Cart"
+                            onclick="window.location.href='/carts'">
+                    </button>
+                    <button type="button" class="btn btn-outline-light me-2"
+                            th:text="#{login}"
+                            onclick="window.location.href='/login'">
+                    </button>
+                    <button type="button" class="btn btn-warning"
+                            th:text="#{sign-up}"
+                            onclick="window.location.href='/sign-up'">
+                    </button>
                 </div>
+
                 <div class="text-end" sec:authorize="isAuthenticated()">
-                    <button type="button" class="btn btn-outline-light me-2" th:text="${#authentication.name}"
-                            onclick="window.location.href='/user'"></button>
-                    <button type="button" class="btn btn-warning" th:text="#{logout}"
-                            onclick="window.location.href='/logout'"></button>
+                    <button type="button" class="btn btn-outline-light me-2"
+                            th:text="Cart"
+                            onclick="window.location.href='/carts'">
+                    </button>
+                    <button type="button" class="btn btn-outline-light me-2"
+                            th:text="${#authentication.name}"
+                            onclick="window.location.href='/profile'">
+                    </button>
+                    <button type="button" class="btn btn-warning"
+                            th:text="#{logout}"
+                            onclick="window.location.href='/logout'">
+
+                    </button>
                 </div>
             </div>
         </div>

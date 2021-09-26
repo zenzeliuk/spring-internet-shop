@@ -1,16 +1,16 @@
 package com.epam.rd.java.basic.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,13 +23,13 @@ public class Cart implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "order_id")
-    private Order orderId;
+    private Order order;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "item_id")
-    private Item itemId;
+    private Item item;
 
     @Column(name = "price", nullable = false)
     private BigDecimal price;
@@ -37,9 +37,11 @@ public class Cart implements Serializable {
     @Column(name = "count", nullable = false, columnDefinition = "INT UNSIGNED")
     private Integer count;
 
+    @CreationTimestamp
     @Column(name = "create_time", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createTime;
 
+    @UpdateTimestamp
     @Column(name = "update_time", columnDefinition = "TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private Timestamp updateTime;
 

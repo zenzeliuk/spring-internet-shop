@@ -1,20 +1,22 @@
 package com.epam.rd.java.basic.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.sun.istack.NotNull;
+import lombok.*;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,18 +29,27 @@ public class User implements UserDetails {
     @Column(name = "id")
     private Long id;
 
+    @NotBlank(message = "Please enter login")
+    @Length(min = 3, message = "Min length = 3")
     @Column(name = "login", nullable = false)
     private String login;
 
+    @NotBlank(message = "Please enter password")
+    @Length(min = 3, message = "Min length = 3")
     @Column(name = "password", nullable = false)
     private String password;
 
+    @NotBlank(message = "Please enter first name")
+    @Length(min = 3, message = "Min length = 3")
     @Column(name = "first_name")
     private String firsName;
 
+    @NotBlank(message = "Please enter last name")
+    @Length(min = 3, message = "Min length = 3")
     @Column(name = "last_name")
     private String lastName;
 
+    @Email(message = "Your email not correct")
     @Column(name = "email")
     private String email;
 
@@ -51,7 +62,7 @@ public class User implements UserDetails {
     @Column(name = "status")
     private StatusUser statusUser;
 
-    @OneToMany (mappedBy = "userId")
+    @OneToMany (mappedBy = "user", fetch = FetchType.EAGER)
     private Set<Order> orders = new HashSet<>();
 
     @Override

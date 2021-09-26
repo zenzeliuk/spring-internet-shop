@@ -1,6 +1,5 @@
 package com.epam.rd.java.basic.controller.item;
 
-import com.epam.rd.java.basic.controller.util.Helper;
 import com.epam.rd.java.basic.model.Brand;
 import com.epam.rd.java.basic.model.Category;
 import com.epam.rd.java.basic.model.Color;
@@ -8,19 +7,13 @@ import com.epam.rd.java.basic.model.Item;
 import com.epam.rd.java.basic.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Controller

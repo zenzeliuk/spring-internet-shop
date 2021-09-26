@@ -1,7 +1,5 @@
 package com.epam.rd.java.basic.controller;
 
-import com.epam.rd.java.basic.model.Role;
-import com.epam.rd.java.basic.model.StatusUser;
 import com.epam.rd.java.basic.model.User;
 import com.epam.rd.java.basic.model.dto.UserDTO;
 import com.epam.rd.java.basic.model.mapper.UserMapper;
@@ -63,19 +61,12 @@ public class AdminController {
 
     @PostMapping("/change-status")
     public String changeStatus(
-            @RequestParam String id,
+            @RequestParam Long id,
             @RequestParam String currentPage,
             @RequestParam String sortField,
             @RequestParam String sortDir
     ) {
-        User user = userService.findById(id);
-        if (user.getStatusUser().equals(StatusUser.BLOCKED)) {
-            user.setStatusUser(StatusUser.ACTIVE);
-        } else {
-            user.setStatusUser(StatusUser.BLOCKED);
-        }
-        userService.save(user);
-
+        userService.changeStatus(id);
         return redirectToAdminUsers(currentPage, sortField, sortDir);
     }
 
@@ -85,22 +76,13 @@ public class AdminController {
 
     @PostMapping("/change-role")
     public String changeRole(
-            @RequestParam String id,
+            @RequestParam Long id,
             @RequestParam String currentPage,
             @RequestParam String sortField,
             @RequestParam String sortDir
     ) {
-        User user = userService.findById(id);
 
-        if (user.getRoles().contains(Role.USER)) {
-            user.getRoles().clear();
-            user.getRoles().add(Role.ADMIN);
-        } else {
-            user.getRoles().clear();
-            user.getRoles().add(Role.USER);
-        }
-        userService.save(user);
-
+        userService.changeRole(id);
         return redirectToAdminUsers(currentPage, sortField, sortDir);
     }
 }

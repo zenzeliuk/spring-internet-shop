@@ -118,8 +118,8 @@
                         <h6 th:text="${item.name}" class="font-weight-semibold mb-2"></h6>
                     </div>
                     <h3 th:text="${item.price} + ' UAH'" class="mb-0 font-weight-semibold"></h3>
-                    <form method="POST" action="/carts/add">
-                        <input type="text" name="item_id" th:value="${item.id}" hidden>
+                    <form method="GET" action="/carts/add">
+                        <input type="text" name="itemId" th:value="${item.id}" hidden>
                         <button type="submit" class="btn bg-cart">
                             <i class="fa fa-cart-plus mr-2"></i> Add to cart
                         </button>

@@ -11,7 +11,6 @@ VALUES (1, 1, 25499, 'Ноутбук Acer Aspire 7 A715-75G-54HY', 'https://cont
        (10, 1, 23999, 'Ноутбук Acer Nitro 5 AN515-44-R8BU (NH.Q9HEU.00H)', 'https://content1.rozetka.com.ua/goods/images/big/37886074.jpg'),
        (11, 1, 62999, 'Ноутбук Asus ROG Zephyrus G14 GA401QM-K2263T (90NR05S6-M06970)', 'https://content2.rozetka.com.ua/goods/images/big/203020150.jpg'),
        (12, 1, 25999, 'Ноутбук Asus AsusPRO P3540FB-BQ0434R (90NX0251-M06180)', 'https://content.rozetka.com.ua/goods/images/big/184585053.jpg');
-
 INSERT INTO `shop-spring`.brandes (id, name)
 VALUES (1, 'Acer'),
        (2, 'Asus'),

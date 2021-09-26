@@ -1,5 +1,6 @@
 package com.epam.rd.java.basic.repository;
 
+import com.epam.rd.java.basic.model.Cart;
 import com.epam.rd.java.basic.model.Item;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,10 +11,11 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
+
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
-
 
     @Query("select i from Item i " +
             "where i.name like %:name% " +

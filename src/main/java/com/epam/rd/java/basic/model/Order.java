@@ -1,16 +1,15 @@
 package com.epam.rd.java.basic.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import javax.management.ConstructorParameters;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,9 +24,9 @@ public class Order implements Serializable {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
-    private User userId;
+    private User user;
 
-    @OneToMany(mappedBy = "orderId")
+    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
     private Set<Cart> carts = new HashSet<>();
 
     @Column(name = "status")
