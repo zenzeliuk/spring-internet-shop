@@ -19,16 +19,21 @@ public class OrderServiceImpl implements OrderService {
     private CartRepository cartRepository;
 
     @Override
+    public List<Order> findAllByStatusAndUser(StatusOrder statusOrder, User user) {
+        return orderRepository.findAllByStatusAndUser(statusOrder, user);
+    }
+
+    @Override
     public Order getOrderUser(User user) {
-        Optional<Order> optionalOrder = orderRepository.findByStatusAndUser(StatusOrder.OPEN, user);
-        if (optionalOrder.isEmpty()) {
+        List<Order> orderList = findAllByStatusAndUser(StatusOrder.OPEN, user);
+        if (orderList.isEmpty()) {
             Order newOrder = Order.builder()
                     .user(user)
                     .status(StatusOrder.OPEN)
                     .build();
             return orderRepository.save(newOrder);
         } else {
-            return optionalOrder.get();
+            return orderList.get(0);
         }
     }
 
@@ -68,4 +73,8 @@ public class OrderServiceImpl implements OrderService {
         cartRepository.save(cart);
     }
 
+    @Override
+    public Optional<Order> findById(Long id) {
+        return orderRepository.findById(id);
+    }
 }

@@ -12,8 +12,23 @@
 <header th:insert="blocks/header :: header"></header>
 
 <div class="container">
-
-
+    <table class="table">
+        <caption>List items</caption>
+        <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Price</th>
+            <th scope="col">Count</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="cart : ${carts}">
+            <td th:text="${cart.item.name}"></td>
+            <td th:text="${cart.item.price}"></td>
+            <td th:text="${cart.item.count}"></td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 
 <footer th:insert="blocks/footer :: footer"></footer>

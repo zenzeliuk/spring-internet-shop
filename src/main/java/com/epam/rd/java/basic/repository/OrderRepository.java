@@ -5,9 +5,9 @@ import com.epam.rd.java.basic.model.StatusOrder;
 import com.epam.rd.java.basic.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
-    Optional<Order> findByStatusAndUser(StatusOrder statusOrder, User user);
+    List<Order> findAllByStatusAndUser(StatusOrder statusOrder, User user);
 }

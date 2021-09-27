@@ -1,13 +1,16 @@
 package com.epam.rd.java.basic.controller;
 
+import com.epam.rd.java.basic.model.Cart;
 import com.epam.rd.java.basic.model.Item;
 import com.epam.rd.java.basic.model.Order;
 import com.epam.rd.java.basic.model.User;
+import com.epam.rd.java.basic.repository.CartRepository;
 import com.epam.rd.java.basic.service.ItemService;
 import com.epam.rd.java.basic.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +20,9 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpSession;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @Controller
 @RequestMapping(value = "/carts")
@@ -25,11 +30,37 @@ public class CartController {
 
     private final ItemService itemService;
     private final OrderService orderService;
+    @Autowired
+    private CartRepository cartRepository;
 
     @Autowired
     public CartController(ItemService itemService, OrderService orderService) {
         this.itemService = itemService;
         this.orderService = orderService;
+    }
+
+    @GetMapping
+    public String cart(Model model, @AuthenticationPrincipal User user, HttpSession session) {
+        Set<Cart> carts = new HashSet<>();
+        Order orderFromSession = (Order) session.getAttribute("orderSession");
+        if (user == null) {
+            if (orderFromSession != null) {
+                Optional<Order> order = orderService.findById(orderFromSession.getId());
+                if (order.isPresent()) {
+                    carts = order.get().getCarts();
+                }
+            }
+        } else {
+            Order orderUser = orderService.getOrderUser(user);
+            if (orderFromSession != null) {
+                orderService.mergeOrderFromSessionAndOrderUsers(orderFromSession, orderUser);
+                session.setAttribute("orderSession", null);
+            }
+            carts = cartRepository.findAllByOrder_User(user);
+        }
+
+        model.addAttribute("carts", carts);
+        return "cart";
     }
 
     @GetMapping("/add")
@@ -60,6 +91,7 @@ public class CartController {
             }
             orderService.addItemForOrderUser(item.get(), orderUser);
         }
+
         return redirectPath;
     }
 
