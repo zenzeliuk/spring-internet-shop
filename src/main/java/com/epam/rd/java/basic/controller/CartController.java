@@ -35,15 +35,15 @@ public class CartController {
     }
 
     @PostMapping
-    public String confirmCart(Model model) {
-        Order order = (Order) model.getAttribute("order");
-        if (order == null) {
+    public String confirmCart(Model model, @AuthenticationPrincipal User user) {
+        Optional<Order> optionalOrder = orderRepository.findOrderByStatusAndUser(StatusOrder.OPEN, user);
+        if (optionalOrder.isEmpty()){
             return "redirect:/";
         }
+        Order order = optionalOrder.get();
         order.setStatus(StatusOrder.REGISTERED);
         order.setTotalPrice(Helper.getTotalPrice(order.getCarts()));
         orderService.update(order);
-        model.addAttribute("order", null);
         return "redirect:/";
     }
 
@@ -53,7 +53,7 @@ public class CartController {
         if (user == null) {
             Order orderFromSession = (Order) session.getAttribute("orderSession");
             if (orderFromSession != null) {
-                order = orderFromSession;
+                order = orderRepository.getOne(orderFromSession.getId());
             }
         } else {
             Optional<Order> orderFromDb = orderRepository.findOrderByStatusAndUser(StatusOrder.OPEN, user);

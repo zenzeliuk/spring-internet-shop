@@ -13,9 +13,13 @@ import java.util.stream.Collectors;
 public class OrderMapper {
 
     public static OrderDTO toOrderDTO(Order order) {
+        String login = "";
+        if (order.getUser() != null){
+            login = order.getUser().getLogin();
+        }
         return OrderDTO.builder()
                 .id(String.valueOf(order.getId()))
-                .login(order.getUser().getLogin())
+                .login(login)
                 .createTime(convert(order.getCreateTime()))
                 .updateTime(convert(order.getUpdateTime()))
                 .totalPrice(String.valueOf(getPrice(order)))

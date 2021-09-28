@@ -26,21 +26,24 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order addItemToOrderFromSession(Item item, Order orderFromSession) {
+        Order order;
         if (orderFromSession == null) {
             orderFromSession = new Order();
             orderFromSession.setStatus(StatusOrder.OPEN);
-            orderFromSession = orderRepository.save(orderFromSession);
+            order = orderRepository.save(orderFromSession);
+        }else {
+            order = orderRepository.getOne(orderFromSession.getId());
         }
         Cart cart = Cart.builder()
                 .count(1)
-                .order(orderFromSession)
+                .order(order)
                 .price(item.getPrice())
                 .item(item)
                 .build();
-        cartRepository.save(cart);
-        orderFromSession = orderRepository.getOne(orderFromSession.getId());
-        orderFromSession.setTotalPrice(Helper.getTotalPrice(orderFromSession.getCarts()));
-        return orderRepository.save(orderFromSession);
+        cart = cartRepository.save(cart);
+        order.getCarts().add(cart);
+        order.setTotalPrice(Helper.getTotalPrice(order.getCarts()));
+        return orderRepository.save(order);
     }
 
     @Override
@@ -50,6 +53,7 @@ public class OrderServiceImpl implements OrderService {
         if (optionalOrder.isEmpty()) {
             order = Order.builder()
                     .user(user)
+                    .carts(new HashSet<>())
                     .status(StatusOrder.OPEN)
                     .build();
             order = orderRepository.save(order);
@@ -62,10 +66,22 @@ public class OrderServiceImpl implements OrderService {
                 .price(item.getPrice())
                 .item(item)
                 .build();
-        cartRepository.save(cart);
-        order = orderRepository.getOne(order.getId());
+        cart = cartRepository.save(cart);
+        order.getCarts().add(cart);
         order.setTotalPrice(Helper.getTotalPrice(order.getCarts()));
         orderRepository.save(order);
+
+
+//        Cart cart = Cart.builder()
+//                .count(1)
+//                .order(order)
+//                .price(item.getPrice())
+//                .item(item)
+//                .build();
+//        cartRepository.save(cart);
+//        order = orderRepository.getOne(order.getId());
+//        order.setTotalPrice(Helper.getTotalPrice(order.getCarts()));
+//        orderRepository.save(order);
     }
 
     @Override
@@ -100,7 +116,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<Order> getPage(String login, BigDecimal priceFrom, BigDecimal priceTo, String statusOrder,
+    public Page<Order> getPage(BigDecimal priceFrom, BigDecimal priceTo, String statusOrder,
                                Integer page, Integer size, String sortField, String sortDir, User user) {
         Pageable pageable = MyPageable.getPageable(page, size, sortField, sortDir);
         StatusOrder status = StatusOrder.getStatusOrder(statusOrder);
@@ -116,11 +132,9 @@ public class OrderServiceImpl implements OrderService {
         }
 
         if (user == null) {
-            return orderRepository.findAllWithFilter(pageable, login,
-                    priceFrom, priceTo, status);
+            return orderRepository.findAllWithFilter(pageable,priceFrom, priceTo, status);
         } else {
-            return orderRepository.findAllWithFilterAndUser(pageable, user,
-                    priceFrom, priceTo, status);
+            return orderRepository.findAllWithFilterAndUser(pageable, user, priceFrom, priceTo, status);
         }
     }
 

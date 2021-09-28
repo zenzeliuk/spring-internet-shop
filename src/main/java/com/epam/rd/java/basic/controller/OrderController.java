@@ -33,7 +33,6 @@ public class OrderController {
 
     @GetMapping()
     public String getMyOrders(Model model, @AuthenticationPrincipal User user,
-                              @RequestParam(name = "loginLike", required = false, defaultValue = "") String login,
                               @RequestParam(name = "priceFrom", required = false, defaultValue = "0") BigDecimal priceFrom,
                               @RequestParam(name = "priceTo", required = false, defaultValue = "999999") BigDecimal priceTo,
                               @RequestParam(name = "statusOrder", required = false, defaultValue = "") String statusOrder,
@@ -42,7 +41,7 @@ public class OrderController {
                               @RequestParam(name = "sortField", required = false, defaultValue = "updateTime") String sortField,
                               @RequestParam(name = "sortDir", required = false, defaultValue = "desc") String sortDir
     ) {
-        Page<Order> orderList = orderService.getPage(login, priceFrom, priceTo, statusOrder,
+        Page<Order> orderList = orderService.getPage(priceFrom, priceTo, statusOrder,
                 page, size, sortField, sortDir, user);
         List<OrderDTO> orderDTOList = OrderMapper.orderDTOList(orderList.getContent());
         model.addAttribute("orders", orderDTOList);
@@ -53,7 +52,6 @@ public class OrderController {
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String getAllOrders(Model model,
-                               @RequestParam(name = "loginLike", required = false, defaultValue = "") String login,
                                @RequestParam(name = "priceFrom", required = false) BigDecimal priceFrom,
                                @RequestParam(name = "priceTo", required = false) BigDecimal priceTo,
                                @RequestParam(name = "statusOrder", required = false, defaultValue = "") String statusOrder,
@@ -62,7 +60,7 @@ public class OrderController {
                                @RequestParam(name = "sortField", required = false, defaultValue = "updateTime") String sortField,
                                @RequestParam(name = "sortDir", required = false, defaultValue = "desc") String sortDir
     ) {
-        Page<Order> orderPage = orderService.getPage(login, priceFrom, priceTo, statusOrder,
+        Page<Order> orderPage = orderService.getPage(priceFrom, priceTo, statusOrder,
                 page, size, sortField, sortDir, null);
         List<OrderDTO> orderDTOList = OrderMapper.orderDTOList(orderPage.getContent());
         model.addAttribute("orders", orderDTOList);

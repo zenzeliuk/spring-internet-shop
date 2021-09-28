@@ -14,7 +14,7 @@ public interface OrderService {
     void addItemToOpenOrderForUser(Item item, User user);
     Optional<Order> findById(Long id);
     void update(Order order);
-    Page<Order> getPage(String login, BigDecimal priceFrom, BigDecimal priceTo, String statusOrder,
+    Page<Order> getPage(BigDecimal priceFrom, BigDecimal priceTo, String statusOrder,
                         Integer page, Integer size, String sortField, String sortDir, User user);
     void mergeCartsBetweenSessionAndUserWithStatusOpen(Order orderFromSession, User user);
 }

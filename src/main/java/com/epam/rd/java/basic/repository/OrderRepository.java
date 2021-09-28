@@ -18,13 +18,11 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Optional<Order> findOrderByStatusAndUser(StatusOrder statusOrder, User user);
 
     @Query("select o from Order o " +
-            "where o.user.login like %:login% " +
-            "and o.totalPrice between :priceFrom and :priceTo " +
+            "where o.totalPrice between :priceFrom and :priceTo " +
             "and o.status = :statusOrder " +
             "group by o")
     Page<Order> findAllWithFilter(
             Pageable pageable,
-            @Param("login") String login,
             @Param("priceFrom") BigDecimal priceFrom,
             @Param("priceTo") BigDecimal priceTo,
             @Param("statusOrder") StatusOrder statusOrder

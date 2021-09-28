@@ -34,13 +34,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findById(Long id) {
-        return userRepository.getOne(id);
-    }
-
-    @Override
     public void changeStatus(Long id) {
-        User user = findById(id);
+        User user = userRepository.getOne(id);
         if (user.getStatusUser().equals(StatusUser.BLOCKED)) {
             user.setStatusUser(StatusUser.ACTIVE);
         } else {
@@ -51,7 +46,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changeRole(Long id) {
-        User user = findById(id);
+        User user = userRepository.getOne(id);
         if (user.getRoles().contains(Role.USER)) {
             user.getRoles().clear();
             user.getRoles().add(Role.ADMIN);

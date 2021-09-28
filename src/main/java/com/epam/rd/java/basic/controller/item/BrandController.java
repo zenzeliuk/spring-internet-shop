@@ -26,7 +26,7 @@ public class BrandController {
     }
 
     @PostMapping()
-    public String create(@ModelAttribute("brand") Brand brand) {
+    public String save(@ModelAttribute("brand") Brand brand) {
         brandService.save(brand);
         return "redirect:/items/new";
     }

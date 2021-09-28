@@ -83,7 +83,7 @@ public class ItemController {
     }
 
     @PostMapping()
-    @PreAuthorize("hasAuthority('ADMIN')")
+//    @PreAuthorize("hasAuthority('ADMIN')")
     public String create(@ModelAttribute("item") Item item,
                          @RequestParam String category_id,
                          @RequestParam String brand_id,

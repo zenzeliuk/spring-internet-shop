@@ -11,7 +11,6 @@ public interface UserService extends UserDetailsService {
     boolean save(User user);
     UserDetails loadUserByUsername(String login);
     Page<User> findAll(Pageable pageable);
-    User findById(Long id);
     void changeStatus(Long id);
     void changeRole(Long id);
     void update(User user, String login, String password, String firstName, String lastName, String email);
