@@ -2,18 +2,19 @@ package com.epam.rd.java.basic.service;
 
 import com.epam.rd.java.basic.model.Item;
 import com.epam.rd.java.basic.model.Order;
-import com.epam.rd.java.basic.model.StatusOrder;
 import com.epam.rd.java.basic.model.User;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
+import java.math.BigDecimal;
 import java.util.Optional;
 
 public interface OrderService {
 
-    List<Order> findAllByStatusAndUser(StatusOrder statusOrder, User user);
-    Order getOrderUser(User user);
     Order addItemToOrderFromSession(Item item, Order orderFromSession);
-    void mergeOrderFromSessionAndOrderUsers(Order orderFromSession, Order orderUsers);
-    void addItemForOrderUser(Item item, Order orderUser);
+    void addItemToOpenOrderForUser(Item item, User user);
     Optional<Order> findById(Long id);
+    void update(Order order);
+    Page<Order> getPage(String login, BigDecimal priceFrom, BigDecimal priceTo, String statusOrder,
+                        Integer page, Integer size, String sortField, String sortDir, User user);
+    void mergeCartsBetweenSessionAndUserWithStatusOpen(Order orderFromSession, User user);
 }

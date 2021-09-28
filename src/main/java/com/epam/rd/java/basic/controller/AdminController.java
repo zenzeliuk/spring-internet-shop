@@ -9,7 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,20 +26,21 @@ public class AdminController {
 
     @GetMapping()
     public String users(Model model) {
-        return userListPage(model, 1, "login", "asc");
+        return userListPage(model, 1, "id", "asc", 5);
     }
 
     @GetMapping("/page/{currentPage}")
     public String userListPage(
             Model model,
             @PathVariable int currentPage,
-            @Param("sortField") String sortField,
-            @Param("sortDir") String sortDir
+            @RequestParam(value = "sortField", required = false, defaultValue = "id") String sortField,
+            @RequestParam(value = "sortDir", required = false, defaultValue = "asc") String sortDir,
+            @RequestParam(value = "size", required = false, defaultValue = "5") Integer size
     ) {
 
         Sort sort = Sort.by(sortField);
         sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
-        Pageable pageable = PageRequest.of(currentPage - 1, 2, sort);
+        Pageable pageable = PageRequest.of(currentPage - 1, size, sort);
         Page<User> page = userService.findAll(pageable);
 
         String reversSortDir = sortDir.equals("asc") ? "desc" : "asc";

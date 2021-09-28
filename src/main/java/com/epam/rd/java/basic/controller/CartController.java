@@ -1,37 +1,32 @@
 package com.epam.rd.java.basic.controller;
 
-import com.epam.rd.java.basic.model.Cart;
-import com.epam.rd.java.basic.model.Item;
-import com.epam.rd.java.basic.model.Order;
-import com.epam.rd.java.basic.model.User;
-import com.epam.rd.java.basic.repository.CartRepository;
+import com.epam.rd.java.basic.controller.util.Helper;
+import com.epam.rd.java.basic.model.*;
+import com.epam.rd.java.basic.repository.OrderRepository;
 import com.epam.rd.java.basic.service.ItemService;
 import com.epam.rd.java.basic.service.OrderService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpSession;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 @Controller
 @RequestMapping(value = "/carts")
+@Log4j2
 public class CartController {
 
     private final ItemService itemService;
     private final OrderService orderService;
     @Autowired
-    private CartRepository cartRepository;
+    private OrderRepository orderRepository;
 
     @Autowired
     public CartController(ItemService itemService, OrderService orderService) {
@@ -39,31 +34,38 @@ public class CartController {
         this.orderService = orderService;
     }
 
+    @PostMapping
+    public String confirmCart(Model model) {
+        Order order = (Order) model.getAttribute("order");
+        if (order == null) {
+            return "redirect:/";
+        }
+        order.setStatus(StatusOrder.REGISTERED);
+        order.setTotalPrice(Helper.getTotalPrice(order.getCarts()));
+        orderService.update(order);
+        model.addAttribute("order", null);
+        return "redirect:/";
+    }
+
     @GetMapping
     public String cart(Model model, @AuthenticationPrincipal User user, HttpSession session) {
-        Set<Cart> carts = new HashSet<>();
-        Order orderFromSession = (Order) session.getAttribute("orderSession");
+        Order order = null;
         if (user == null) {
+            Order orderFromSession = (Order) session.getAttribute("orderSession");
             if (orderFromSession != null) {
-                Optional<Order> order = orderService.findById(orderFromSession.getId());
-                if (order.isPresent()) {
-                    carts = order.get().getCarts();
-                }
+                order = orderFromSession;
             }
         } else {
-            Order orderUser = orderService.getOrderUser(user);
-            if (orderFromSession != null) {
-                orderService.mergeOrderFromSessionAndOrderUsers(orderFromSession, orderUser);
-                session.setAttribute("orderSession", null);
+            Optional<Order> orderFromDb = orderRepository.findOrderByStatusAndUser(StatusOrder.OPEN, user);
+            if (orderFromDb.isPresent()) {
+                order = orderFromDb.get();
             }
-            carts = cartRepository.findAllByOrder_User(user);
         }
-
-        model.addAttribute("carts", carts);
+        model.addAttribute("order", order);
         return "cart";
     }
 
-    @GetMapping("/add")
+    @PostMapping("/add")
     public String addToCart(RedirectAttributes redirectAttributes,
                             @RequestHeader(required = false) String referer,
                             @AuthenticationPrincipal User user,
@@ -78,20 +80,13 @@ public class CartController {
         if (item.isEmpty()) {
             return redirectPath;
         }
-
-        Order orderFromSession = (Order) session.getAttribute("orderSession");
         if (user == null) {
+            Order orderFromSession = (Order) session.getAttribute("orderSession");
             orderFromSession = orderService.addItemToOrderFromSession(item.get(), orderFromSession);
             session.setAttribute("orderSession", orderFromSession);
         } else {
-            Order orderUser = orderService.getOrderUser(user);
-            if (orderFromSession != null) {
-                orderService.mergeOrderFromSessionAndOrderUsers(orderFromSession, orderUser);
-                session.setAttribute("orderSession", null);
-            }
-            orderService.addItemForOrderUser(item.get(), orderUser);
+            orderService.addItemToOpenOrderForUser(item.get(), user);
         }
-
         return redirectPath;
     }
 

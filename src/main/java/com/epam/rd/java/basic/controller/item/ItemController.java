@@ -7,6 +7,7 @@ import com.epam.rd.java.basic.model.Item;
 import com.epam.rd.java.basic.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -67,6 +68,7 @@ public class ItemController {
     }
 
     @GetMapping(value = "/new")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String newItem(Model model) {
         List<Category> categoryList = categoryService.findAll();
         List<Brand> brandList = brandService.findAll();
@@ -81,6 +83,7 @@ public class ItemController {
     }
 
     @PostMapping()
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String create(@ModelAttribute("item") Item item,
                          @RequestParam String category_id,
                          @RequestParam String brand_id,

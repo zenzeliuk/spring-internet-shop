@@ -1,9 +1,11 @@
 package com.epam.rd.java.basic.config;
 
+import com.epam.rd.java.basic.model.Role;
 import com.epam.rd.java.basic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -40,6 +42,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                     .antMatchers("/", "/sign-up", "/items", "/carts/**").permitAll()
+                    .antMatchers("/user", "/orders").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
+                    .antMatchers(HttpMethod.POST, "/carts").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
                     .anyRequest()
                     .authenticated()
                 .and()

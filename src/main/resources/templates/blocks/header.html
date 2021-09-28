@@ -10,7 +10,7 @@
 
                 <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                     <li><a href="/" class="nav-link px-2 text-secondary" th:text="#{home}"></a></li>
-                    <li><a href="/items/new" class="nav-link px-2 text-white" th:text="#{add-new-item}"></a></li>
+                    <li><a href="/items" class="nav-link px-2 text-white" th:text="#{items}"></a></li>
                     <li><a href="#" class="nav-link px-2 text-white" th:text="#{about}"></a></li>
                 </ul>
 
@@ -36,7 +36,7 @@
                     </button>
                     <button type="button" class="btn btn-outline-light me-2"
                             th:text="${#authentication.name}"
-                            onclick="window.location.href='/profile'">
+                            onclick="window.location.href='/user'">
                     </button>
                     <button type="button" class="btn btn-warning"
                             th:text="#{logout}"

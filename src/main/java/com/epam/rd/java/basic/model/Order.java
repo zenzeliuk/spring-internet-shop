@@ -1,10 +1,15 @@
 package com.epam.rd.java.basic.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.management.ConstructorParameters;
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,11 +27,22 @@ public class Order implements Serializable {
     @Column(name = "id")
     private Long id;
 
+    @CreationTimestamp
+    @Column(name = "create_time")
+    private Timestamp createTime;
+
+    @UpdateTimestamp
+    @Column(name = "update_time")
+    private Timestamp updateTime;
+
+    @Column(name = "total_price")
+    private BigDecimal totalPrice;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
     private Set<Cart> carts = new HashSet<>();
 
     @Column(name = "status")

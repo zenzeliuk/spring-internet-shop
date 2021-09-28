@@ -11,5 +11,4 @@ import java.util.Set;
 public interface CartRepository extends JpaRepository<Cart, Long> {
 
     List<Cart> findAllByOrder(Order order);
-    Set<Cart> findAllByOrder_User(User user);
 }

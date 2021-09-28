@@ -1,17 +1,15 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
-    <!--    <link rel="stylesheet" href="/static/css/item.css">-->
-
 </head>
 <body>
 <header th:insert="blocks/header :: header"></header>
 
-<div class="container" th:if="${order != null}">
+<div class="container">
     <table class="table">
         <caption>List items</caption>
         <thead>
@@ -22,17 +20,13 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="cart : ${order.getCarts()}">
+        <tr th:each="cart : ${orderDetails.getCarts()}">
             <td th:text="${cart.item.name}"></td>
             <td th:text="${cart.price}"></td>
             <td th:text="${cart.count}"></td>
         </tr>
         </tbody>
     </table>
-    <form method="POST">
-        <h3 th:text="${'Total price ' + order.totalPrice + ' грн.'}"></h3>
-        <input th:if="${order.totalPrice != 0}" type="submit" name="confirm" value="Confirm" id="submit" sec:authorize="isAuthenticated()">
-    </form>
 </div>
 
 <footer th:insert="blocks/footer :: footer"></footer>

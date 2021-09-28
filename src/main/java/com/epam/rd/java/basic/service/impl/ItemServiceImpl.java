@@ -8,6 +8,7 @@ import com.epam.rd.java.basic.repository.ColorRepository;
 import com.epam.rd.java.basic.repository.ItemRepository;
 import com.epam.rd.java.basic.service.ItemService;
 import com.epam.rd.java.basic.service.Param;
+import com.epam.rd.java.basic.service.util.MyPageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -56,11 +57,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Page<Item> getPage(String nameLike, BigDecimal priceFrom, BigDecimal priceTo, Integer page, Integer size, String sortField, String sortDir, HttpServletRequest request) {
-        Sort sort = Sort.by(sortField);
-        sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
-        Pageable pageable = PageRequest.of(page - 1, size, sort);
-
+    public Page<Item> getPage(String nameLike, BigDecimal priceFrom, BigDecimal priceTo,
+                              Integer page, Integer size, String sortField, String sortDir, HttpServletRequest request) {
+        Pageable pageable = MyPageable.getPageable(page, size, sortField, sortDir);
         List<Long> listCategoryId = getListCategoryId(request, Param.CATEGORY.getName());
         List<Long> listBrandId = getListBrandId(request, Param.BRAND.getName());
         List<Long> listColorId = getListColorId(request, Param.COLOR.getName());

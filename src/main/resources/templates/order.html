@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+
+<div class="container">
+    <div>
+        <form th:action="${action} == 'user' ? '/orders' : '/orders/all'" method="get"
+              th:with="urlBuilder = ${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest().build().getQuery()}">
+
+            <div class="input-group">
+                <select class="btn btn-outline-primary" name="statusOrder">
+                    <option th:if="${urlBuilder != null}"
+                            th:each="status :${T(com.epam.rd.java.basic.model.StatusOrder).values()}"
+                            th:value="${status}"
+                            th:text="${status.name()}"
+                            th:selected="${urlBuilder.contains('statusOrder=' + status)}">
+                    </option>
+                    <option th:if="${urlBuilder == null}"
+                            th:each="status :${T(com.epam.rd.java.basic.model.StatusOrder).values()}"
+                            th:value="${status}"
+                            th:text="${status.name()}"
+                            th:selected="${status.name().equals('REGISTERED')}">
+                    </option>
+                </select>
+
+                <div class="input-group-append">
+                    <button class="btn btn-outline-danger" type="submit">Apply</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    <table class="table">
+        <caption>List orders</caption>
+        <thead>
+        <tr>
+            <th scope="col">Login</th>
+            <th scope="col">Created</th>
+            <th scope="col">Updated</th>
+            <th scope="col">Total price</th>
+            <th scope="col">Status</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order : ${orders}">
+            <td th:text="${order.login}"></td>
+            <td th:text="${order.createTime}"></td>
+            <td th:text="${order.updateTime}"></td>
+            <td th:text="${order.totalPrice}"></td>
+            <td th:text="${order.status}"></td>
+            <td>
+                <form action="/orders/change-status-order" method="POST" sec:authorize="hasAuthority('ADMIN')">
+                    <input name="id" th:value="${order.id}" hidden>
+                    <div class="input-group">
+                        <select class="btn btn-outline-primary" id="inputGroupSelect04" name="status">
+                            <option th:each="status :${T(com.epam.rd.java.basic.model.StatusOrder).values()}"
+                                    th:value="${status}"
+                                    th:text="${status.name()}" th:selected="${order.status == status.name()}">
+                            </option>
+                        </select>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-danger" type="submit">Apply</button>
+                        </div>
+                    </div>
+                </form>
+            </td>
+            <td>
+                <form action="/orders/detail">
+                    <input name="id" th:value="${order.id}" hidden>
+                    <button type="submit" class="btn btn-outline-info">Details</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<footer th:insert="blocks/footer :: footer"></footer>
+</body>
+</html>
