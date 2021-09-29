@@ -41,7 +41,7 @@ public class CartController {
 
     @GetMapping
     public String cart(Model model, @AuthenticationPrincipal User user, HttpSession session) {
-        Order order = orderService.getOpenOrderOrNull(user, session);
+        Order order = orderService.getOpenOrderOrReturnNull(user, session);
         model.addAttribute("order", order);
         return "cart";
     }
@@ -58,6 +58,15 @@ public class CartController {
         String redirectPath = "redirect:" + components.getPath();
         if (orderService.addItemToCart(user, itemId, session)) {
             return redirectPath;
+        } else {
+            return "redirect:/error";
+        }
+    }
+
+    @PostMapping("/delete")
+    public String delete(@RequestParam(name = "cartId") Long cartId, @AuthenticationPrincipal User user, HttpSession session) {
+        if (orderService.deleteItem(cartId, user, session)) {
+            return "redirect:/carts";
         } else {
             return "redirect:/error";
         }

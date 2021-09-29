@@ -12,26 +12,46 @@
 <header th:insert="blocks/header :: header"></header>
 
 <div class="container" th:if="${order != null}">
+    <h2 style="text-align: center">Корзина</h2>
     <table class="table">
-        <caption>List items</caption>
         <thead>
         <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Price</th>
-            <th scope="col">Count</th>
+            <th style="width: 500px">Name</th>
+            <th style="text-align: center">Price</th>
+            <th>Count</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="cart : ${order.getCarts()}">
             <td th:text="${cart.item.name}"></td>
-            <td th:text="${cart.price}"></td>
-            <td th:text="${cart.count}"></td>
+            <td th:text="${cart.price}" style="text-align: center"></td>
+            <td style="text-align: center">
+                <form action="/carts/change-count" method="POST">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" th:text="${cart.count}"></span>
+                        </div>
+                        <input type="number" th:value="${cart.count}" name="count">
+                        <input name="itemId" th:value="${cart.id}" hidden>
+                        <button class="btn btn-outline-primary" type="submit">Змінити</button>
+                    </div>
+                </form>
+            </td>
+            <td style="text-align: center">
+                <form action="/carts/delete" method="POST">
+                    <input name="cartId" th:value="${cart.id}" hidden>
+                    <button class="btn btn-outline-danger" type="submit">Видалити</button>
+                </form>
+            </td>
+
         </tr>
         </tbody>
     </table>
     <form method="POST">
-        <h3 th:text="${'Total price ' + order.totalPrice + ' грн.'}"></h3>
-        <input th:if="${order.totalPrice != 0}" type="submit" name="confirm" value="Confirm" id="submit" sec:authorize="isAuthenticated()">
+        <h3 th:text="${'Сумма замовлення ' + order.totalPrice + ' грн.'}"></h3>
+        <input th:if="${order.totalPrice != 0}" type="submit" name="confirm" value="Confirm" id="submit"
+               sec:authorize="isAuthenticated()">
     </form>
 </div>
 

@@ -10,23 +10,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
     Optional<Order> findOrderByStatusAndUser(StatusOrder statusOrder, User user);
 
-    @Query("select o from Order o " +
-            "where o.totalPrice between :priceFrom and :priceTo " +
-            "and o.status = :statusOrder " +
-            "group by o")
-    Page<Order> findAllWithFilter(
-            Pageable pageable,
-            @Param("priceFrom") BigDecimal priceFrom,
-            @Param("priceTo") BigDecimal priceTo,
-            @Param("statusOrder") StatusOrder statusOrder
-    );
 
     @Query("select o from Order o " +
             "where o.user = :user " +
@@ -41,4 +30,21 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             @Param("statusOrder") StatusOrder statusOrder
     );
 
+    @Query("select o from Order o " +
+            "where o.totalPrice between :priceFrom and :priceTo " +
+            "and o.status = :statusOrder " +
+            "group by o")
+    Page<Order> findAllWithFilter(
+            Pageable pageable,
+            @Param("priceFrom") BigDecimal priceFrom,
+            @Param("priceTo") BigDecimal priceTo,
+            @Param("statusOrder") StatusOrder statusOrder
+    );
+
+    @Query("select o from Order o " +
+            "where o.totalPrice between :priceFrom and :priceTo " +
+            "and o.user is null " +
+            "and o.status = :statusOrder " +
+            "group by o")
+    Page<Order> findAllWithFilterUnregisterUser(Pageable pageable, BigDecimal priceFrom, BigDecimal priceTo, StatusOrder status);
 }

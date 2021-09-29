@@ -9,37 +9,103 @@
 <body>
 <header th:insert="blocks/header :: header"></header>
 
-<div class="container">
+<div class="container" th:if="${orders != null || orders.isEmpty()}">
     <div>
         <form th:action="${action} == 'user' ? '/orders' : '/orders/all'" method="get"
               th:with="urlBuilder = ${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest().build().getQuery()}">
 
-            <div class="input-group">
-                <select class="btn btn-outline-primary" name="statusOrder">
-                    <option th:if="${urlBuilder != null}"
-                            th:each="status :${T(com.epam.rd.java.basic.model.StatusOrder).values()}"
-                            th:value="${status}"
-                            th:text="${status.name()}"
-                            th:selected="${urlBuilder.contains('statusOrder=' + status)}">
-                    </option>
-                    <option th:if="${urlBuilder == null}"
-                            th:each="status :${T(com.epam.rd.java.basic.model.StatusOrder).values()}"
-                            th:value="${status}"
-                            th:text="${status.name()}"
-                            th:selected="${status.name().equals('REGISTERED')}">
-                    </option>
-                </select>
-
-                <div class="input-group-append">
-                    <button class="btn btn-outline-danger" type="submit">Apply</button>
-                </div>
-            </div>
-
+            <h2 style="text-align: center">Сортування та фільтрація</h2>
+            <table class="table">
+                <tr>
+                    <th style="text-align: center">Статус</th>
+                    <th style="text-align: center">Ціна</th>
+                    <th style="text-align: center">Сортування</th>
+                    <th style="text-align: center"></th>
+                </tr>
+                <tr>
+                    <td style="text-align: center">
+                        <select class="btn btn-outline-primary" name="statusOrder">
+                            <option th:if="${urlBuilder != null}"
+                                    th:each="status :${T(com.epam.rd.java.basic.model.StatusOrder).values()}"
+                                    th:value="${status}"
+                                    th:text="${status.name()}"
+                                    th:selected="${urlBuilder.contains('statusOrder=' + status)}">
+                            </option>
+                            <option th:if="${urlBuilder == null}"
+                                    th:each="status :${T(com.epam.rd.java.basic.model.StatusOrder).values()}"
+                                    th:value="${status}"
+                                    th:text="${status.name()}"
+                                    th:selected="${status.name().equals('REGISTERED')}">
+                            </option>
+                        </select>
+                    </td>
+                    <td style="text-align: center" >
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Від</span>
+                            </div>
+                            <input th:value="${#request.getParameter('priceFrom')}" name="priceFrom">
+                            <div class="input-group-append">
+                                <span class="input-group-text">До</span>
+                            </div>
+                            <input th:value="${#request.getParameter('priceTo')}" name="priceTo">
+                        </div>
+                    </td>
+                    <td style="text-align: center">
+                        <select class="btn btn-outline-primary"  name="sortField">
+                            <option th:if="${urlBuilder != null}"
+                                    th:each="field : ${T(com.epam.rd.java.basic.controller.util.OrderSortField).values()}"
+                                    th:selected="${urlBuilder.contains('sortField=' + field)}"
+                                    th:value="${field}"
+                                    th:text="${field.field}">
+                            </option>
+                            <option th:if="${urlBuilder == null}"
+                                    th:each="field : ${T(com.epam.rd.java.basic.controller.util.OrderSortField).values()}"
+                                    th:value="${field}"
+                                    th:text="${field.field}">
+                            </option>
+                        </select>
+                        <select class="btn btn-outline-primary" name="sortDir">
+                            <option th:if="${urlBuilder != null}"
+                                    th:each="dir : ${T(com.epam.rd.java.basic.controller.util.SortDir).values()}"
+                                    th:selected="${urlBuilder.contains('sortDir=' + dir)}"
+                                    th:value="${dir}"
+                                    th:text="${dir.dir}">
+                            </option>
+                            <option th:if="${urlBuilder == null}"
+                                    th:each="dir : ${T(com.epam.rd.java.basic.controller.util.SortDir).values()}"
+                                    th:value="${dir}"
+                                    th:text="${dir.dir}">
+                            </option>
+                        </select>
+                    </td>
+                    <td style="text-align: center">
+                        <button class="btn btn-outline-danger" type="submit">Застосувати</button>
+                    </td>
+                </tr>
+            </table>
         </form>
     </div>
 
+    <h1 style="text-align: center" th:text="${action} == 'user' ? 'Мої замовлення' : 'Всі замовлення'"></h1>
+
+    <nav aria-label="...">
+        <ul class="pagination">
+            <li class="page-item disabled">
+                <a class="page-link">Pagination</a>
+            </li>
+            <li th:each="page : ${numbers}" class="page-item"
+                th:class="${page == orders.get(0).currentPage + 1} ? 'page-item active'">
+                <a class="page-link"
+                   th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}"
+                   th:href="${urlBuilder.replaceQueryParam('page', page).build().toString()}"
+                   th:text="${page}">
+                </a>
+            </li>
+        </ul>
+    </nav>
+
     <table class="table">
-        <caption>List orders</caption>
         <thead>
         <tr>
             <th th:if="${action} == 'admin'" scope="col">Login</th>

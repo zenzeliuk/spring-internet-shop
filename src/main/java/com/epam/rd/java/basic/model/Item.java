@@ -37,6 +37,7 @@ public class Item implements Serializable {
     @OneToOne(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private ItemDetails itemDetails;
 
+
     @Column(name = "count", columnDefinition = "INT UNSIGNED")
     private Integer count;
 

@@ -13,5 +13,7 @@ public class OrderDTO {
     private String updateTime;
     private String totalPrice;
     private String status;
+    private Integer currentPage;
+    private Integer totalPage;
 
 }

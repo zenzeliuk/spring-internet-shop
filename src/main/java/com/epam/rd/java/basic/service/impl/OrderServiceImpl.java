@@ -2,6 +2,8 @@ package com.epam.rd.java.basic.service.impl;
 
 import com.epam.rd.java.basic.controller.util.Helper;
 import com.epam.rd.java.basic.model.*;
+import com.epam.rd.java.basic.model.dto.OrderDTO;
+import com.epam.rd.java.basic.model.mapper.OrderMapper;
 import com.epam.rd.java.basic.repository.CartRepository;
 import com.epam.rd.java.basic.repository.ItemRepository;
 import com.epam.rd.java.basic.repository.OrderRepository;
@@ -15,7 +17,9 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -124,7 +128,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order getOpenOrderOrNull(User user, HttpSession session) {
+    public Order getOpenOrderOrReturnNull(User user, HttpSession session) {
         if (user == null) {
             Order orderFromSession = (Order) session.getAttribute("orderSession");
             if (orderFromSession != null) {
@@ -137,6 +141,49 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         return null;
+    }
+
+
+    @Override
+    public boolean deleteItem(Long cartId, User user, HttpSession session) {
+        Optional<Cart> cartOptional = cartRepository.findById(cartId);
+        Cart cart;
+        if (cartOptional.isEmpty()) {
+            return false;
+        } else {
+            cart = cartOptional.get();
+        }
+        if (user == null) {
+            Order orderFromSession = (Order) session.getAttribute("orderSession");
+            if (orderFromSession == null) {
+                return false;
+            }
+            Optional<Order> optionalOrder = orderRepository.findById(orderFromSession.getId());
+            return deleteCartFromOrder(cart, optionalOrder);
+        } else {
+            Optional<Order> optionalOrder = orderRepository.findOrderByStatusAndUser(StatusOrder.OPEN, user);
+            return deleteCartFromOrder(cart, optionalOrder);
+        }
+    }
+
+    private boolean deleteCartFromOrder(Cart cart, Optional<Order> optionalOrder) {
+        if (optionalOrder.isEmpty()) {
+            return false;
+        }
+        Order order = optionalOrder.get();
+        Set<Cart> cartSet = order.getCarts();
+        if (cartSet == null || !cartSet.contains(cart)) {
+            return false;
+        }
+        if (cartSet.size() == 1) {
+            orderRepository.delete(order);
+        } else {
+            cartRepository.delete(cart);
+            Order orderAfterDelete = orderRepository.getOne(order.getId());
+            orderAfterDelete.setTotalPrice(Helper.getTotalPrice(orderAfterDelete.getCarts()));
+            orderRepository.save(orderAfterDelete);
+        }
+        return true;
     }
 
     @Override
@@ -155,17 +202,16 @@ public class OrderServiceImpl implements OrderService {
         return true;
     }
 
+
     @Override
     public Optional<Order> findById(Long id) {
         return orderRepository.findById(id);
     }
 
     @Override
-    public Page<Order> getPage(BigDecimal priceFrom, BigDecimal priceTo, String statusOrder,
-                               Integer page, Integer size, String sortField, String sortDir, User user) {
+    public List<OrderDTO> getOrdersWithFilter(BigDecimal priceFrom, BigDecimal priceTo, String statusOrder, User user, Integer page, Integer size, String sortField, String sortDir) {
         Pageable pageable = MyPageable.getPageable(page, size, sortField, sortDir);
         StatusOrder status = StatusOrder.getStatusOrder(statusOrder);
-
         if (status == null) {
             status = StatusOrder.REGISTERED;
         }
@@ -175,12 +221,13 @@ public class OrderServiceImpl implements OrderService {
         if (priceTo == null) {
             priceTo = new BigDecimal(999999999);
         }
-
+        Page<Order> result;
         if (user == null) {
-            return orderRepository.findAllWithFilter(pageable, priceFrom, priceTo, status);
+            result = orderRepository.findAllWithFilter(pageable, priceFrom, priceTo, status);
         } else {
-            return orderRepository.findAllWithFilterAndUser(pageable, user, priceFrom, priceTo, status);
+            result = orderRepository.findAllWithFilterAndUser(pageable, user, priceFrom, priceTo, status);
         }
+        return OrderMapper.orderDTOList(result);
     }
 
 

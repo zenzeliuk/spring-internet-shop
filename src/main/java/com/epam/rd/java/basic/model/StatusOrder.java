@@ -4,6 +4,9 @@ public enum StatusOrder {
     OPEN, REGISTERED, PAID, CANCELED;
 
     public static StatusOrder getStatusOrder(String name) {
+        if (name == null){
+            return null;
+        }
         switch (name) {
             case ("OPEN"): {
                 return OPEN;

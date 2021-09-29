@@ -50,7 +50,6 @@ public class  Helper {
             }
         }
         return result;
-//        return Arrays.stream(paramValues).map(Long::parseLong).collect(Collectors.toList());
     }
 
 

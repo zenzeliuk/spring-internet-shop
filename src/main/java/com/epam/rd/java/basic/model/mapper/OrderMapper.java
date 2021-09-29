@@ -3,6 +3,7 @@ package com.epam.rd.java.basic.model.mapper;
 import com.epam.rd.java.basic.controller.util.Helper;
 import com.epam.rd.java.basic.model.Order;
 import com.epam.rd.java.basic.model.dto.OrderDTO;
+import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -14,7 +15,7 @@ public class OrderMapper {
 
     public static OrderDTO toOrderDTO(Order order) {
         String login = "";
-        if (order.getUser() != null){
+        if (order.getUser() != null) {
             login = order.getUser().getLogin();
         }
         return OrderDTO.builder()
@@ -35,12 +36,16 @@ public class OrderMapper {
         }
     }
 
-    public static List<OrderDTO> orderDTOList(List<Order> orderList) {
-        return orderList.stream()
+    public static List<OrderDTO> orderDTOList(Page<Order> orderPage) {
+        List<OrderDTO> orderDTOList = orderPage.stream()
                 .map(OrderMapper::toOrderDTO)
                 .collect(Collectors.toList());
+        if (!orderDTOList.isEmpty()){
+            orderDTOList.get(0).setCurrentPage(orderPage.getNumber());
+            orderDTOList.get(0).setTotalPage(orderPage.getTotalPages());
+        }
+        return orderDTOList;
     }
-
 
     private static String convert(Timestamp timestamp) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
