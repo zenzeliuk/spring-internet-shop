@@ -1,7 +1,6 @@
 package com.epam.rd.java.basic.controller;
 
 import com.epam.rd.java.basic.model.Order;
-import com.epam.rd.java.basic.model.StatusOrder;
 import com.epam.rd.java.basic.model.User;
 import com.epam.rd.java.basic.model.dto.OrderDTO;
 import com.epam.rd.java.basic.model.mapper.OrderMapper;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -26,10 +24,12 @@ import java.util.Optional;
 @RequestMapping("/orders")
 public class OrderController {
 
+    private final OrderService orderService;
+
     @Autowired
-    private OrderService orderService;
-    @Autowired
-    EntityManager entityManager;
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
+    }
 
     @GetMapping()
     public String getMyOrders(Model model, @AuthenticationPrincipal User user,
@@ -72,7 +72,7 @@ public class OrderController {
     public String orderDetails(@RequestParam(name = "id") Long id, Model model) {
         Optional<Order> order = orderService.findById(id);
         if (order.isEmpty()) {
-            return "redirect:/";
+            return "redirect:/error";
         }
         model.addAttribute("orderDetails", order.get());
         return "order-details";
@@ -82,15 +82,12 @@ public class OrderController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public String changeStatusOrder(@RequestParam(name = "id") Long id,
                                     @RequestParam(name = "status") String status) {
-        Optional<Order> order = orderService.findById(id);
-        StatusOrder statusOrder = StatusOrder.getStatusOrder(status);
 
-        if (order.isEmpty() || statusOrder == null) {
-            return "redirect:/orders";
+        if (orderService.changeStatus(id, status)) {
+            return "redirect:/orders/all";
+        } else {
+            return "redirect:/error";
         }
-        order.get().setStatus(statusOrder);
-        orderService.update(order.get());
-        return "redirect:/orders";
     }
 
 }

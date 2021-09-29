@@ -3,6 +3,7 @@ package com.epam.rd.java.basic.service.impl;
 import com.epam.rd.java.basic.controller.util.Helper;
 import com.epam.rd.java.basic.model.*;
 import com.epam.rd.java.basic.repository.CartRepository;
+import com.epam.rd.java.basic.repository.ItemRepository;
 import com.epam.rd.java.basic.repository.OrderRepository;
 import com.epam.rd.java.basic.service.OrderService;
 import com.epam.rd.java.basic.service.util.MyPageable;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Optional;
@@ -18,20 +20,24 @@ import java.util.Optional;
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    @Autowired
-    private OrderRepository orderRepository;
-    @Autowired
-    private CartRepository cartRepository;
+    private final OrderRepository orderRepository;
+    private final CartRepository cartRepository;
+    private final ItemRepository itemRepository;
 
+    @Autowired
+    public OrderServiceImpl(OrderRepository orderRepository, CartRepository cartRepository, ItemRepository itemRepository) {
+        this.orderRepository = orderRepository;
+        this.cartRepository = cartRepository;
+        this.itemRepository = itemRepository;
+    }
 
-    @Override
     public Order addItemToOrderFromSession(Item item, Order orderFromSession) {
         Order order;
         if (orderFromSession == null) {
             orderFromSession = new Order();
             orderFromSession.setStatus(StatusOrder.OPEN);
             order = orderRepository.save(orderFromSession);
-        }else {
+        } else {
             order = orderRepository.getOne(orderFromSession.getId());
         }
         Cart cart = Cart.builder()
@@ -46,7 +52,6 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.save(order);
     }
 
-    @Override
     public void addItemToOpenOrderForUser(Item item, User user) {
         Optional<Order> optionalOrder = orderRepository.findOrderByStatusAndUser(StatusOrder.OPEN, user);
         Order order;
@@ -70,18 +75,6 @@ public class OrderServiceImpl implements OrderService {
         order.getCarts().add(cart);
         order.setTotalPrice(Helper.getTotalPrice(order.getCarts()));
         orderRepository.save(order);
-
-
-//        Cart cart = Cart.builder()
-//                .count(1)
-//                .order(order)
-//                .price(item.getPrice())
-//                .item(item)
-//                .build();
-//        cartRepository.save(cart);
-//        order = orderRepository.getOne(order.getId());
-//        order.setTotalPrice(Helper.getTotalPrice(order.getCarts()));
-//        orderRepository.save(order);
     }
 
     @Override
@@ -106,13 +99,65 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Optional<Order> findById(Long id) {
-        return orderRepository.findById(id);
+    public boolean changeStatus(Long id, String status) {
+        Optional<Order> order = orderRepository.findById(id);
+        if (order.isEmpty() || status == null || StatusOrder.getStatusOrder(status) == null) {
+            return false;
+        }
+        StatusOrder statusOrder = StatusOrder.getStatusOrder(status);
+        order.get().setStatus(statusOrder);
+        orderRepository.save(order.get());
+        return true;
     }
 
     @Override
-    public void update(Order order) {
+    public boolean confirmOpenOrder(User user) {
+        Optional<Order> optionalOrder = orderRepository.findOrderByStatusAndUser(StatusOrder.OPEN, user);
+        if (optionalOrder.isEmpty()) {
+            return false;
+        }
+        Order order = optionalOrder.get();
+        order.setStatus(StatusOrder.REGISTERED);
+        order.setTotalPrice(Helper.getTotalPrice(order.getCarts()));
         orderRepository.save(order);
+        return true;
+    }
+
+    @Override
+    public Order getOpenOrderOrNull(User user, HttpSession session) {
+        if (user == null) {
+            Order orderFromSession = (Order) session.getAttribute("orderSession");
+            if (orderFromSession != null) {
+                return orderRepository.getOne(orderFromSession.getId());
+            }
+        } else {
+            Optional<Order> orderFromDb = orderRepository.findOrderByStatusAndUser(StatusOrder.OPEN, user);
+            if (orderFromDb.isPresent()) {
+                return orderFromDb.get();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public boolean addItemToCart(User user, Long itemId, HttpSession session) {
+        Optional<Item> item = itemRepository.findById(itemId);
+        if (item.isEmpty()) {
+            return false;
+        }
+        if (user == null) {
+            Order orderFromSession = (Order) session.getAttribute("orderSession");
+            orderFromSession = addItemToOrderFromSession(item.get(), orderFromSession);
+            session.setAttribute("orderSession", orderFromSession);
+        } else {
+            addItemToOpenOrderForUser(item.get(), user);
+        }
+        return true;
+    }
+
+    @Override
+    public Optional<Order> findById(Long id) {
+        return orderRepository.findById(id);
     }
 
     @Override
@@ -132,7 +177,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         if (user == null) {
-            return orderRepository.findAllWithFilter(pageable,priceFrom, priceTo, status);
+            return orderRepository.findAllWithFilter(pageable, priceFrom, priceTo, status);
         } else {
             return orderRepository.findAllWithFilterAndUser(pageable, user, priceFrom, priceTo, status);
         }

@@ -13,36 +13,41 @@
 
 <section class="get-in-touch">
     <h1 class="title" th:text="#{sign-up}"></h1>
-
     <form class="contact-form row" th:method="POST" th:action="@{/sign-up}" th:object="${user}">
 
         <div class="form-field col-lg-6">
             <input th:field="*{login}" id="login" class="input-text js-input" type="text" required>
             <label class="label" for="login" th:text="#{logi}"></label>
+            <div th:if="${#fields.hasErrors('login')}" th:errors="*{login}" style="color: red"></div>
         </div>
 
         <div class="form-field col-lg-6 ">
             <input th:field="*{password}" id="password" class="input-text js-input" type="password" required>
             <label class="label" for="password" th:text="#{password}"></label>
+            <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" style="color: red"></div>
         </div>
 
         <div class="form-field col-lg-6 ">
             <input th:field="*{firsName}" id="first-name" class="input-text js-input" type="text" required>
             <label class="label" for="first-name" th:text="#{first-name}"></label>
+            <div th:if="${#fields.hasErrors('firsName')}" th:errors="*{firsName}" style="color: red"></div>
         </div>
 
         <div class="form-field col-lg-6 ">
             <input th:field="*{lastName}" id="last-name" class="input-text js-input" type="text" required>
             <label class="label" for="last-name" th:text="#{last-name}"></label>
+            <div th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" style="color: red"></div>
         </div>
 
         <div class="form-field col-lg-12">
             <input th:field="*{email}" id="email" class="input-text js-input" type="email" required>
             <label class="label" for="email" th:text="#{email}"></label>
+            <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" style="color: red"></div>
         </div>
 
         <div class="form-field col-lg-12">
             <input class="submit-btn" type="submit" th:value="#{submit}">
+            <div th:if="${errorExist}" style="color: red" th:text="'User with login ' + ${user.login} + ' exist'"></div>
         </div>
     </form>
 </section>

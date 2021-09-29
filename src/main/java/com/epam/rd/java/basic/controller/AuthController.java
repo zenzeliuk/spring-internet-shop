@@ -6,11 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.Valid;
+import java.net.http.HttpRequest;
 import java.util.Map;
 
 @Controller
@@ -18,6 +21,11 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
+
+    @GetMapping(value = "/user")
+    public String userHome() {
+        return "user";
+    }
 
     @GetMapping(value = "/login")
     public String loginPage() {
@@ -30,9 +38,14 @@ public class AuthController {
     }
 
     @PostMapping(value = "/sign-up")
-    public String create(@ModelAttribute("user") User user, Map<String, Object> model) {
+    public String create(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, Map<String, Object> model) {
+
+        if (bindingResult.hasErrors()) {
+            return "sign-up";
+        }
+
         if (!userService.save(user)) {
-            model.put("message", "User exists!");
+            model.put("errorExist", "User exists!");
             return "sign-up";
         }
         return "redirect:/";

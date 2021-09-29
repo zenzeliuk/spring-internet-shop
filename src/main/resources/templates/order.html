@@ -42,23 +42,23 @@
         <caption>List orders</caption>
         <thead>
         <tr>
-            <th scope="col">Login</th>
+            <th th:if="${action} == 'admin'" scope="col">Login</th>
             <th scope="col">Created</th>
             <th scope="col">Updated</th>
             <th scope="col">Total price</th>
             <th scope="col">Status</th>
-            <th scope="col"></th>
+            <th scope="col" th:if="${action} == 'admin'"></th>
             <th scope="col"></th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="order : ${orders}">
-            <td th:text="${order.login}"></td>
+            <td th:if="${action} == 'admin'" th:text="${order.login}"></td>
             <td th:text="${order.createTime}"></td>
             <td th:text="${order.updateTime}"></td>
             <td th:text="${order.totalPrice}"></td>
             <td th:text="${order.status}"></td>
-            <td>
+            <td th:if="${action} == 'admin'">
                 <form action="/orders/change-status-order" method="POST" sec:authorize="hasAuthority('ADMIN')">
                     <input name="id" th:value="${order.id}" hidden>
                     <div class="input-group">

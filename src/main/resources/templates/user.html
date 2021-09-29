@@ -38,7 +38,7 @@
             </div>
         </div>
         <div class="col-sm-3">
-            <div class="card" style="width: 18rem;">
+            <div class="card" style="width: 18rem;" sec:authorize="hasAuthority('ADMIN')">
                 <div class="card-body">
                     <h5 class="card-title">Всі замовлення</h5>
                     <a href="/orders/all" class="btn btn-primary">Перейти</a>
