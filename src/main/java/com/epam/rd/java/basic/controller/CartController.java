@@ -2,7 +2,7 @@ package com.epam.rd.java.basic.controller;
 
 import com.epam.rd.java.basic.model.Order;
 import com.epam.rd.java.basic.model.User;
-import com.epam.rd.java.basic.service.OrderService;
+import com.epam.rd.java.basic.service.CartService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,17 +22,17 @@ import javax.servlet.http.HttpSession;
 public class CartController {
 
 
-    private final OrderService orderService;
+    private final CartService cartService;
 
     @Autowired
-    public CartController(OrderService orderService) {
-        this.orderService = orderService;
+    public CartController(CartService cartService) {
+        this.cartService = cartService;
     }
 
     @PostMapping
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public String confirmCart(@AuthenticationPrincipal User user) {
-        if (orderService.confirmOpenOrder(user)) {
+        if (cartService.confirmOpenOrder(user)) {
             return "redirect:/orders";
         } else {
             return "redirect:/error";
@@ -41,7 +41,7 @@ public class CartController {
 
     @GetMapping
     public String cart(Model model, @AuthenticationPrincipal User user, HttpSession session) {
-        Order order = orderService.getOpenOrderOrReturnNull(user, session);
+        Order order = cartService.getOpenOrderOrReturnNull(user, session);
         model.addAttribute("order", order);
         return "cart";
     }
@@ -56,7 +56,7 @@ public class CartController {
         UriComponents components = UriComponentsBuilder.fromHttpUrl(referer).build();
         components.getQueryParams().forEach(redirectAttributes::addAttribute);
         String redirectPath = "redirect:" + components.getPath();
-        if (orderService.addItemToCart(user, itemId, session)) {
+        if (cartService.addItemToCart(user, itemId, session)) {
             return redirectPath;
         } else {
             return "redirect:/error";
@@ -65,7 +65,7 @@ public class CartController {
 
     @PostMapping("/delete")
     public String delete(@RequestParam(name = "cartId") Long cartId, @AuthenticationPrincipal User user, HttpSession session) {
-        if (orderService.deleteItem(cartId, user, session)) {
+        if (cartService.deleteItem(cartId, user, session)) {
             return "redirect:/carts";
         } else {
             return "redirect:/error";
@@ -77,7 +77,7 @@ public class CartController {
                         @RequestParam(name = "count") Integer count,
                         @AuthenticationPrincipal User user,
                         HttpSession session) {
-        if (orderService.changeCount(cartId, count, user, session)) {
+        if (cartService.changeCount(cartId, count, user, session)) {
             return "redirect:/carts";
         } else {
             return "redirect:/error";

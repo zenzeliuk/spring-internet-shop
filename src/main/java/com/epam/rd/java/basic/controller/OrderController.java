@@ -4,6 +4,7 @@ import com.epam.rd.java.basic.model.Order;
 import com.epam.rd.java.basic.model.User;
 import com.epam.rd.java.basic.model.dto.OrderDTO;
 import com.epam.rd.java.basic.service.OrderService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,6 +22,7 @@ import java.util.stream.IntStream;
 
 @Controller
 @RequestMapping("/orders")
+@Log4j2
 public class OrderController {
 
     private final OrderService orderService;
