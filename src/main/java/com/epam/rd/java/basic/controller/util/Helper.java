@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class  Helper {
 
@@ -53,4 +54,7 @@ public class  Helper {
     }
 
 
+    public static int[] getNumbers(Integer totalPage) {
+        return IntStream.range(1, totalPage + 1).toArray();
+    }
 }

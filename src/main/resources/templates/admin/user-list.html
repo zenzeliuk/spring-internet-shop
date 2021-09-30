@@ -9,51 +9,55 @@
 <body>
 <header th:insert="blocks/header :: header"></header>
 
-<div class="container mt-5">
+<div class="container mt-5" th:if="${users != null || users.isEmpty()}">
 
-    <div class="container mt-5">
-        <p th:text="${'TOTAL USERS: ' + totalUsers}" class="fs-2"></p>
-    </div>
+    <form action="/admin/users" method="GET"
+          th:with="urlBuilder = ${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest().build().getQuery()}">
+
+        <h2 style="text-align: center">Сортування</h2>
+        <select class="btn btn-outline-primary" name="sortField">
+            <option th:if="${urlBuilder != null}"
+                    th:each="field : ${T(com.epam.rd.java.basic.controller.util.UserSortField).values()}"
+                    th:selected="${urlBuilder.contains('sortField=' + field)}"
+                    th:value="${field}"
+                    th:text="${field.field}">
+            </option>
+            <option th:if="${urlBuilder == null}"
+                    th:each="field : ${T(com.epam.rd.java.basic.controller.util.UserSortField).values()}"
+                    th:value="${field}"
+                    th:text="${field.field}">
+            </option>
+        </select>
+        <select class="btn btn-outline-primary" name="sortDir">
+            <option th:if="${urlBuilder != null}"
+                    th:each="dir : ${T(com.epam.rd.java.basic.controller.util.SortDir).values()}"
+                    th:selected="${urlBuilder.contains('sortDir=' + dir)}"
+                    th:value="${dir}"
+                    th:text="${dir.dir}">
+            </option>
+            <option th:if="${urlBuilder == null}"
+                    th:each="dir : ${T(com.epam.rd.java.basic.controller.util.SortDir).values()}"
+                    th:value="${dir}"
+                    th:text="${dir.dir}">
+            </option>
+        </select>
+        <td style="text-align: center">
+            <button class="btn btn-outline-danger" type="submit">Застосувати</button>
+        </td>
+    </form>
+
     <nav aria-label="...">
         <ul class="pagination">
-
-            <li class="page-item" th:class="${currentPage == 1} ? 'page-item disabled'">
-                <a class="page-link" th:if="${currentPage > 1}"
-                   th:href="@{'/admin/users/page/1' + '?sortField=' + ${sortField} +'&sortDir=' + ${sortDir}}">
-                    First
-                </a>
-                <a class="page-link" th:unless="${currentPage != 1}">First</a>
+            <li class="page-item disabled">
+                <a class="page-link">Pagination</a>
             </li>
-
-            <li class="page-item" th:class="${currentPage < 2} ? 'page-item disabled'">
-                <a class="page-link" th:if="${currentPage > 1}"
-                   th:href="@{'/admin/users/page/' + ${currentPage - 1}  + '?sortField=' + ${sortField} +'&sortDir=' + ${sortDir}}">
-                    Previous
+            <li th:each="page : ${numbers}" class="page-item"
+                th:class="${page == users.get(0).currentPage + 1} ? 'page-item active'">
+                <a class="page-link"
+                   th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}"
+                   th:href="${urlBuilder.replaceQueryParam('page', page).build().toString()}"
+                   th:text="${page}">
                 </a>
-                <a class="page-link" th:unless="${currentPage > 1}">Previous</a>
-            </li>
-
-            <li class="page-item" th:each="i: ${#numbers.sequence(1, totalPages)}"
-                th:class="${i == currentPage} ? 'page-item active'">
-                <a class="page-link" th:if="${i != currentPage}"
-                   th:href="@{'/admin/users/page/' + ${i} + '?sortField=' + ${sortField} +'&sortDir=' + ${sortDir}}">[[${i}]]</a>
-                <a class="page-link" th:unless="${i != currentPage}">[[${i}]]</a>
-            </li>
-
-            <li class="page-item" th:class="${currentPage == totalPages} ? 'page-item disabled'">
-                <a class="page-link" th:if="${currentPage < totalPages}"
-                   th:href="@{'/admin/users/page/' + ${currentPage + 1}  + '?sortField=' + ${sortField} +'&sortDir=' + ${sortDir}}">
-                    Next
-                </a>
-                <a class="page-link" th:unless="${currentPage != totalPages}">Next</a>
-            </li>
-
-            <li class="page-item" th:class="${currentPage == totalPages} ? 'page-item disabled'">
-                <a class="page-link" th:if="${currentPage < totalPages}"
-                   th:href="@{'/admin/users/page/' + ${totalPages}  + '?sortField=' + ${sortField} +'&sortDir=' + ${sortDir}}">
-                    Last
-                </a>
-                <a class="page-link" th:unless="${currentPage != totalPages}">Last</a>
             </li>
         </ul>
     </nav>
@@ -61,29 +65,13 @@
     <table class="table">
         <thead>
         <tr>
-            <th id="id" scope="col">
-                <a th:href="@{'/admin/users/page/' + ${currentPage} + '?sortField=id&sortDir=' + ${reversSortDir}}">Id</a>
-            </th>
-            <th id="login" scope="col">
-                <a th:href="@{'/admin/users/page/' + ${currentPage} + '?sortField=login&sortDir=' + ${reversSortDir}}">Login</a>
-            </th>
-            <th id="first_name" scope="col">
-                <a th:href="@{'/admin/users/page/' + ${currentPage} + '?sortField=firsName&sortDir=' + ${reversSortDir}}">First
-                    name</a>
-            </th>
-            <th id="last_name" scope="col">
-                <a th:href="@{'/admin/users/page/' + ${currentPage} + '?sortField=lastName&sortDir=' + ${reversSortDir}}">Last
-                    name</a>
-            </th>
-            <th id="email" scope="col">
-                <a th:href="@{'/admin/users/page/' + ${currentPage} + '?sortField=email&sortDir=' + ${reversSortDir}}">Email</a>
-            </th>
-            <th id="role" scope="col">
-                <a th:href="@{'/admin/users/page/' + ${currentPage} + '?sortField=roles&sortDir=' + ${reversSortDir}}">Role</a>
-            </th>
-            <th id="status" scope="col">
-                <a th:href="@{'/admin/users/page/' + ${currentPage} + '?sortField=statusUser&sortDir=' + ${reversSortDir}}">Status</a>
-            </th>
+            <th id="id" scope="col">Id</th>
+            <th id="login" scope="col">Login</th>
+            <th id="first_name" scope="col">First name</th>
+            <th id="last_name" scope="col">Last name</th>
+            <th id="email" scope="col">Email</th>
+            <th id="role" scope="col">Role</th>
+            <th id="status" scope="col">Status</th>
             <th id="actions" scope="col">Actions</th>
         </tr>
         </thead>
@@ -101,10 +89,6 @@
                 <div class="btn-group" role="group" aria-label="Basic outlined example">
                     <form action="/admin/users/change-role" method="POST">
                         <input type="text" name="id" th:value="${user.id}" hidden>
-                        <input type="text" name="currentPage" th:value="${currentPage}" hidden>
-                        <input type="text" name="sortField" th:value="${sortField}" hidden>
-                        <input type="text" name="sortDir" th:value="${sortDir}" hidden>
-
                         <button th:if="${user.role =='[USER]'}" type="submit" class="btn btn-outline-primary">
                             SET ADMIN
                         </button>
@@ -115,10 +99,6 @@
 
                     <form action="/admin/users/change-status" method="POST">
                         <input type="text" name="id" th:value="${user.id}" hidden>
-                        <input type="text" name="currentPage" th:value="${currentPage}" hidden>
-                        <input type="text" name="sortField" th:value="${sortField}" hidden>
-                        <input type="text" name="sortDir" th:value="${sortDir}" hidden>
-
                         <button th:if="${user.status =='ACTIVE'}" type="submit" class="btn btn-outline-primary">
                             BLOCK
                         </button>

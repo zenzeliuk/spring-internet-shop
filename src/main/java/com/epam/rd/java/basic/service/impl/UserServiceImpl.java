@@ -3,8 +3,11 @@ package com.epam.rd.java.basic.service.impl;
 import com.epam.rd.java.basic.model.Role;
 import com.epam.rd.java.basic.model.StatusUser;
 import com.epam.rd.java.basic.model.User;
+import com.epam.rd.java.basic.model.dto.UserDTO;
+import com.epam.rd.java.basic.model.mapper.UserMapper;
 import com.epam.rd.java.basic.repository.UserRepository;
 import com.epam.rd.java.basic.service.UserService;
+import com.epam.rd.java.basic.service.util.MyPageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -26,11 +30,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         return userRepository.findByLogin(login);
-    }
-
-    @Override
-    public Page<User> findAll(Pageable pageable) {
-        return userRepository.findAll(pageable);
     }
 
     @Override
@@ -60,7 +59,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void update(User user, String login, String password, String firstName, String lastName, String email) {
         user.setLogin(login);
-        user.setPassword(password);
+        user.setPassword(passwordEncoder.encode(password));
         user.setFirsName(firstName);
         user.setLastName(lastName);
         user.setEmail(email);
@@ -68,8 +67,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UserDTO> getUsersWithFilter(Integer page, Integer size, String sortField, String sortDir) {
+        Pageable pageable = MyPageable.getPageable(page, size, sortField, sortDir);
+        Page<User> userPage = userRepository.findAll(pageable);
+        return UserMapper.toUserDTOList(userPage);
+    }
+
+    @Override
     public boolean save(User user) {
-        if (userRepository.existsByLogin(user.getLogin())){
+        if (userRepository.existsByLogin(user.getLogin())) {
             return false;
         }
         user.setStatusUser(StatusUser.ACTIVE);

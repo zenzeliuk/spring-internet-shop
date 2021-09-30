@@ -1,6 +1,5 @@
 package com.epam.rd.java.basic.service.util;
 
-import com.epam.rd.java.basic.controller.util.OrderSortField;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -22,7 +21,7 @@ public class MyPageable {
             sortDir = "desc";
         }
         if (sortField == null){
-            sortField = OrderSortField.updateTime.name();
+            sortField = "id";
         }
         Sort sort = Sort.by(sortField);
         sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();

@@ -2,6 +2,7 @@ package com.epam.rd.java.basic.model.mapper;
 
 import com.epam.rd.java.basic.model.User;
 import com.epam.rd.java.basic.model.dto.UserDTO;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,9 +20,14 @@ public class UserMapper {
                 .build();
     }
 
-    public static List<UserDTO> toUserDTOList(List<User> userList){
-        return userList.stream()
+    public static List<UserDTO> toUserDTOList(Page<User> userPage) {
+        List<UserDTO> userDTOList = userPage.stream()
                 .map(UserMapper::toUserDTO)
                 .collect(Collectors.toList());
+        if (!userDTOList.isEmpty()) {
+            userDTOList.get(0).setCurrentPage(userPage.getNumber());
+            userDTOList.get(0).setTotalPage(userPage.getTotalPages());
+        }
+        return userDTOList;
     }
 }

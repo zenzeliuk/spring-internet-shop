@@ -26,7 +26,7 @@
         </div>
         <div class="mb-3">
             <label for="category" th:text="#{select-category}"></label>
-            <select name="category_id" class="form-select" id="category">
+            <select name="categoryId" class="form-select" id="category">
                 <option th:each="category : ${categories}"
                         th:value="${category.id}"
                         th:text="${category.name}"></option>
@@ -36,7 +36,7 @@
 
         <div class="mb-3">
             <label for="brand" th:text="#{select-brand}"></label>
-            <select name="brand_id" class="form-select" id="brand">
+            <select name="brandId" class="form-select" id="brand">
                 <option th:each="brand : ${brandes}"
                         th:value="${brand.id}"
                         th:text="${brand.name}"></option>
@@ -46,7 +46,7 @@
 
         <div class="mb-3">
             <label for="color" th:text="#{select-color}"></label>
-            <select name="color_id" class="form-select" id="color">
+            <select name="colorId" class="form-select" id="color">
                 <option th:each="color : ${colors}"
                         th:value="${color.id}"
                         th:text="${color.name}"></option>

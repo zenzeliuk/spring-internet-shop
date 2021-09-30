@@ -18,5 +18,7 @@ public class UserDTO {
     private String email;
     private String status;
     private String role;
+    private Integer currentPage;
+    private Integer totalPage;
 
 }

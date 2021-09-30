@@ -34,9 +34,8 @@ public class Item implements Serializable {
     @OneToMany(mappedBy = "item")
     private Set<Cart> carts = new HashSet<>();
 
-    @OneToOne(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "item", fetch = FetchType.LAZY)
     private ItemDetails itemDetails;
-
 
     @Column(name = "count", columnDefinition = "INT UNSIGNED")
     private Integer count;

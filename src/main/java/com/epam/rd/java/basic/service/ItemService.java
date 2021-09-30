@@ -9,7 +9,6 @@ import java.util.Optional;
 
 public interface ItemService {
 
-    Optional<Item> findById(Long id);
-    Item save(Item item);
+    void save(Item item, String categoryId, String brandId, String colorId);
     Page<Item> getPage(String nameLike, BigDecimal priceFrom, BigDecimal priceTo, Integer page, Integer size, String sortField, String sortDir, HttpServletRequest request);
 }

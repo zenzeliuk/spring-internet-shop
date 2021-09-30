@@ -1,5 +1,6 @@
 package com.epam.rd.java.basic.controller;
 
+import com.epam.rd.java.basic.controller.util.Helper;
 import com.epam.rd.java.basic.model.Order;
 import com.epam.rd.java.basic.model.User;
 import com.epam.rd.java.basic.model.dto.OrderDTO;
@@ -18,7 +19,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.IntStream;
 
 @Controller
 @RequestMapping("/orders")
@@ -60,11 +60,9 @@ public class OrderController {
                                @RequestParam(name = "sortDir", required = false) String sortDir
     ) {
         List<OrderDTO> orderDTOList = orderService.getOrdersWithFilter(priceFrom, priceTo, statusOrder, null, page, size, sortField, sortDir);
-        int[] numbers;
-        if (orderDTOList.isEmpty()) {
-            numbers = new int[0];
-        } else {
-            numbers = IntStream.range(1, orderDTOList.get(0).getTotalPage() + 1).toArray();
+        int[] numbers = new int[0];
+        if (!orderDTOList.isEmpty()) {
+            numbers = Helper.getNumbers(orderDTOList.get(0).getTotalPage());
         }
         model.addAttribute("numbers", numbers);
         model.addAttribute("orders", orderDTOList);

@@ -5,105 +5,116 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
     <link type="text/css" th:href="@{/css/item.css}" rel="stylesheet"/>
-<!--        <link href="../../../webapp/css/item.css" th:href="@{/main/webapp/css/item.css}" rel="stylesheet"/>-->
 </head>
 <body>
 <header th:insert="blocks/header :: header"></header>
 
-<form action="/items" method="GET"
-      th:with="urlBuilder = ${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest().build().getQuery()}">
+<div class="container">
+    <form action="/items" method="GET"
+          th:with="urlBuilder = ${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest().build().getQuery()}">
 
-    <h4>CATEGORY</h4>
-    <a th:each="category : ${categories}">
-        <input type="checkbox" name="category"
-               th:if="${urlBuilder != null}"
-               th:checked="${urlBuilder.contains('category=' + category.id)}"
-               th:value="${category.id}"
-               th:text="${category.name}">
-        <input type="checkbox" name="category"
-               th:if="${urlBuilder == null}"
-               th:value="${category.id}"
-               th:text="${category.name}">
-    </a>
+        <h5>Категорії</h5>
+        <a th:each="category : ${categories}">
+            <input type="checkbox" name="category"
+                   th:if="${urlBuilder != null}"
+                   th:checked="${urlBuilder.contains('category=' + category.id)}"
+                   th:value="${category.id}"
+                   th:text="${category.name}">
+            <input type="checkbox" name="category"
+                   th:if="${urlBuilder == null}"
+                   th:value="${category.id}"
+                   th:text="${category.name}">
+        </a>
+        <h5>Бренди</h5>
+        <a th:each="brand : ${brandes}">
+            <input type="checkbox" name="brand"
+                   th:if="${urlBuilder != null}"
+                   th:checked="${urlBuilder.contains('brand=' + brand.id)}"
+                   th:value="${brand.id}"
+                   th:text="${brand.name}">
+            <input type="checkbox" name="brand"
+                   th:if="${urlBuilder == null}"
+                   th:value="${brand.id}"
+                   th:text="${brand.name}">
+        </a>
+        <h5>Кольори</h5>
+        <a th:each="color : ${colors}">
+            <input type="checkbox" name="color"
+                   th:if="${urlBuilder != null}"
+                   th:checked="${urlBuilder.contains('color=' + color.id)}"
+                   th:value="${color.id}"
+                   th:text="${color.name}">
+            <input type="checkbox" name="color"
+                   th:if="${urlBuilder == null}"
+                   th:value="${color.id}"
+                   th:text="${color.name}">
+        </a>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Сортування</span>
+            </div>
+            <select name="sortField">
+                <option th:if="${urlBuilder != null}"
+                        th:each="field : ${T(com.epam.rd.java.basic.controller.util.SortField).values()}"
+                        th:selected="${urlBuilder.contains('sortField=' + field)}"
+                        th:value="${field}"
+                        th:text="${field.field}">
+                </option>
+                <option th:if="${urlBuilder == null}"
+                        th:each="field : ${T(com.epam.rd.java.basic.controller.util.SortField).values()}"
+                        th:value="${field}"
+                        th:text="${field.field}">
+                </option>
+            </select>
+            <select name="sortDir">
+                <option th:if="${urlBuilder != null}"
+                        th:each="dir : ${T(com.epam.rd.java.basic.controller.util.SortDir).values()}"
+                        th:selected="${urlBuilder.contains('sortDir=' + dir)}"
+                        th:value="${dir}"
+                        th:text="${dir.dir}">
+                </option>
+                <option th:if="${urlBuilder == null}"
+                        th:each="dir : ${T(com.epam.rd.java.basic.controller.util.SortDir).values()}"
+                        th:value="${dir}"
+                        th:text="${dir.dir}">
+                </option>
+            </select>
+        </div>
 
-    <h4>BRAND</h4>
-    <a th:each="brand : ${brandes}">
-        <input type="checkbox" name="brand"
-               th:if="${urlBuilder != null}"
-               th:checked="${urlBuilder.contains('brand=' + brand.id)}"
-               th:value="${brand.id}"
-               th:text="${brand.name}">
-        <input type="checkbox" name="brand"
-               th:if="${urlBuilder == null}"
-               th:value="${brand.id}"
-               th:text="${brand.name}">
-    </a>
-    <br/>
 
-    <h4>COLOR</h4>
-    <a th:each="color : ${colors}">
-        <input type="checkbox" name="color"
-               th:if="${urlBuilder != null}"
-               th:checked="${urlBuilder.contains('color=' + color.id)}"
-               th:value="${color.id}"
-               th:text="${color.name}">
-        <input type="checkbox" name="color"
-               th:if="${urlBuilder == null}"
-               th:value="${color.id}"
-               th:text="${color.name}">
-    </a>
-    <br/>
-    <h4>SORTING</h4>
-    <select name="sortField">
-        <option th:if="${urlBuilder != null}"
-                th:each="field : ${T(com.epam.rd.java.basic.controller.util.SortField).values()}"
-                th:selected="${urlBuilder.contains('sortField=' + field)}"
-                th:value="${field}"
-                th:text="${field.field}">
-        </option>
-        <option th:if="${urlBuilder == null}"
-                th:each="field : ${T(com.epam.rd.java.basic.controller.util.SortField).values()}"
-                th:value="${field}"
-                th:text="${field.field}">
-        </option>
-    </select>
-    <select name="sortDir">
-        <option th:if="${urlBuilder != null}"
-                th:each="dir : ${T(com.epam.rd.java.basic.controller.util.SortDir).values()}"
-                th:selected="${urlBuilder.contains('sortDir=' + dir)}"
-                th:value="${dir}"
-                th:text="${dir.dir}">
-        </option>
-        <option th:if="${urlBuilder == null}"
-                th:each="dir : ${T(com.epam.rd.java.basic.controller.util.SortDir).values()}"
-                th:value="${dir}"
-                th:text="${dir.dir}">
-        </option>
-    </select><br/>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Пошук по назві</span>
+            </div>
+            <input th:value="${#request.getParameter('nameLike')}" name="nameLike" id="nameLike">
+            <div class="input-group-append">
+                <span class="input-group-text">Ціна від</span>
+            </div>
+            <input th:value="${#request.getParameter('priceFrom')}" type="number" name="priceFrom" id="priceFrom">
+            <div class="input-group-append">
+                <span class="input-group-text">Ціна до</span>
+            </div>
+            <input th:value="${#request.getParameter('priceTo')}" type="number" name="priceTo" id="priceTo">
+            <button type="submit" class="btn btn-outline-primary">Застосувати</button>
+        </div>
+    </form>
 
-    <label for="priceFrom">Price from</label>
-    <input th:value="${#request.getParameter('priceFrom')}" name="priceFrom" id="priceFrom">
-    <label for="priceTo">Price to</label>
-    <input th:value="${#request.getParameter('priceTo')}" name="priceTo" id="priceTo">
-    <button type="submit">SUBMIT</button>
-</form>
-
-<nav aria-label="...">
-    <ul class="pagination" th:if="${itemsPage.totalPages > 0 }">
-        <li class="page-item disabled">
-            <a class="page-link">Pagination</a>
-        </li>
-        <li class="page-item" th:each="pageNumber : ${numbers}"
-            th:class="${pageNumber == itemsPage.number + 1} ? 'page-item active'">
-            <a class="page-link"
-               th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}"
-               th:href="${urlBuilder.replaceQueryParam('page', pageNumber).build().toString()}"
-               th:text="${pageNumber}">
-            </a>
-        </li>
-    </ul>
-</nav>
-
+    <nav aria-label="...">
+        <ul class="pagination" th:if="${itemsPage.totalPages > 0 }">
+            <li class="page-item disabled">
+                <a class="page-link">Pagination</a>
+            </li>
+            <li class="page-item" th:each="pageNumber : ${numbers}"
+                th:class="${pageNumber == itemsPage.number + 1} ? 'page-item active'">
+                <a class="page-link"
+                   th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}"
+                   th:href="${urlBuilder.replaceQueryParam('page', pageNumber).build().toString()}"
+                   th:text="${pageNumber}">
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
 <div class="container d-flex justify-content-center mt-50 mb-50">
     <div class="row">
         <div th:each="item : ${itemsPage.content}" class="col-md-4 mt-2">
@@ -124,7 +135,6 @@
                             <i class="fa fa-cart-plus mr-2"></i> Add to cart
                         </button>
                     </form>
-
                 </div>
             </div>
         </div>

@@ -4,13 +4,19 @@ import com.epam.rd.java.basic.model.Brand;
 import com.epam.rd.java.basic.model.Category;
 import com.epam.rd.java.basic.model.Color;
 import com.epam.rd.java.basic.model.Item;
-import com.epam.rd.java.basic.service.*;
+import com.epam.rd.java.basic.service.BrandService;
+import com.epam.rd.java.basic.service.CategoryService;
+import com.epam.rd.java.basic.service.ColorService;
+import com.epam.rd.java.basic.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -25,15 +31,13 @@ public class ItemController {
     private final CategoryService categoryService;
     private final BrandService brandService;
     private final ColorService colorService;
-    private final ItemDetailsService itemDetailsService;
 
     @Autowired
-    public ItemController(ItemService itemService, CategoryService categoryService, BrandService brandService, ColorService colorService, ItemDetailsService itemDetailsService) {
+    public ItemController(ItemService itemService, CategoryService categoryService, BrandService brandService, ColorService colorService) {
         this.itemService = itemService;
         this.categoryService = categoryService;
         this.brandService = brandService;
         this.colorService = colorService;
-        this.itemDetailsService = itemDetailsService;
     }
 
     @GetMapping()
@@ -49,20 +53,13 @@ public class ItemController {
 
     ) {
         Page<Item> itemPage = itemService.getPage(nameLike, priceFrom, priceTo, page, size, sortField, sortDir, request);
-
-        //КАТЕГОРІЇ ДЛЯ ФІЛЬТРІВ
         List<Category> categoryList = categoryService.findAll();
         List<Brand> brandList = brandService.findAll();
         List<Color> colorList = colorService.findAll();
-
-        //категорії для фільтрації
         model.addAttribute("categories", categoryList);
         model.addAttribute("brandes", brandList);
         model.addAttribute("colors", colorList);
-
-        //список продуктів
         model.addAttribute("itemsPage", itemPage);
-        //числа для пагінації
         model.addAttribute("numbers", IntStream.range(1, itemPage.getTotalPages() + 1).toArray());
         return "item/items";
     }
@@ -85,14 +82,11 @@ public class ItemController {
     @PostMapping()
     @PreAuthorize("hasAuthority('ADMIN')")
     public String create(@ModelAttribute("item") Item item,
-                         @RequestParam String category_id,
-                         @RequestParam String brand_id,
-                         @RequestParam String color_id) {
-        item.setCount(1);
-        Item savedItem = itemService.save(item);
-        itemDetailsService.save(savedItem, category_id, brand_id, color_id);
+                         @RequestParam String categoryId,
+                         @RequestParam String brandId,
+                         @RequestParam String colorId) {
+        itemService.save(item, categoryId, brandId, colorId);
         return "redirect:/";
     }
-
 
 }

@@ -21,7 +21,7 @@ public class ItemDetails implements Serializable {
     @MapsId
     private Item item;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 
