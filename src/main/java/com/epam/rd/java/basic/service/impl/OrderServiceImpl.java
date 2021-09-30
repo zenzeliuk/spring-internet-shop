@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -27,6 +28,8 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final CartRepository cartRepository;
     private final ItemRepository itemRepository;
+    @Autowired
+    EntityManager entityManager;
 
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository, CartRepository cartRepository, ItemRepository itemRepository) {
@@ -143,30 +146,71 @@ public class OrderServiceImpl implements OrderService {
         return null;
     }
 
-
     @Override
-    public boolean deleteItem(Long cartId, User user, HttpSession session) {
-        Optional<Cart> cartOptional = cartRepository.findById(cartId);
-        Cart cart;
-        if (cartOptional.isEmpty()) {
-            return false;
-        } else {
-            cart = cartOptional.get();
-        }
+    public boolean changeCount(Long cartId, Integer count, User user, HttpSession session) {
+        Cart cart = getCart(cartId);
+        if (cart == null) return false;
+
         if (user == null) {
             Order orderFromSession = (Order) session.getAttribute("orderSession");
             if (orderFromSession == null) {
                 return false;
             }
             Optional<Order> optionalOrder = orderRepository.findById(orderFromSession.getId());
-            return deleteCartFromOrder(cart, optionalOrder);
+            changeCountCart(count, cart, optionalOrder);
         } else {
             Optional<Order> optionalOrder = orderRepository.findOrderByStatusAndUser(StatusOrder.OPEN, user);
-            return deleteCartFromOrder(cart, optionalOrder);
+            changeCountCart(count, cart, optionalOrder);
+        }
+        return true;
+    }
+
+    private boolean changeCountCart(Integer count, Cart cart, Optional<Order> optionalOrder) {
+        if (optionalOrder.isEmpty()) {
+            return false;
+        }
+        Order order = optionalOrder.get();
+        Set<Cart> cartSet = order.getCarts();
+        if (cartSet == null || !cartSet.contains(cart)) {
+            return false;
+        }
+        cart.setCount(count);
+        cartRepository.save(cart);
+        Order o = orderRepository.getOne(cart.getOrder().getId());
+        o.setTotalPrice(Helper.getTotalPrice(o.getCarts()));
+        orderRepository.save(o);
+        return true;
+    }
+
+    @Override
+    public boolean deleteItem(Long cartId, User user, HttpSession session) {
+        Cart cart = getCart(cartId);
+        if (cart == null) return false;
+        if (user == null) {
+            Order orderFromSession = (Order) session.getAttribute("orderSession");
+            if (orderFromSession == null) {
+                return false;
+            }
+            Optional<Order> optionalOrder = orderRepository.findById(orderFromSession.getId());
+            return deleteCartFromOrder(cart, optionalOrder, session);
+        } else {
+            Optional<Order> optionalOrder = orderRepository.findOrderByStatusAndUser(StatusOrder.OPEN, user);
+            return deleteCartFromOrder(cart, optionalOrder, session);
         }
     }
 
-    private boolean deleteCartFromOrder(Cart cart, Optional<Order> optionalOrder) {
+    private Cart getCart(Long cartId) {
+        Optional<Cart> cartOptional = cartRepository.findById(cartId);
+        Cart cart;
+        if (cartOptional.isEmpty()) {
+            return null;
+        } else {
+            cart = cartOptional.get();
+        }
+        return cart;
+    }
+
+    private boolean deleteCartFromOrder(Cart cart, Optional<Order> optionalOrder, HttpSession session) {
         if (optionalOrder.isEmpty()) {
             return false;
         }
@@ -177,11 +221,18 @@ public class OrderServiceImpl implements OrderService {
         }
         if (cartSet.size() == 1) {
             orderRepository.delete(order);
+            session.setAttribute("orderSession", null);
         } else {
+            Set<Cart> carts = new HashSet<>();
+            for (Cart c : cartSet) {
+                if (c != cart) {
+                    carts.add(c);
+                }
+            }
             cartRepository.delete(cart);
-            Order orderAfterDelete = orderRepository.getOne(order.getId());
-            orderAfterDelete.setTotalPrice(Helper.getTotalPrice(orderAfterDelete.getCarts()));
-            orderRepository.save(orderAfterDelete);
+            order.setCarts(carts);
+            order.setTotalPrice(Helper.getTotalPrice(carts));
+            orderRepository.save(order);
         }
         return true;
     }

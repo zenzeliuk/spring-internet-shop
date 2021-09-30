@@ -21,4 +21,5 @@ public interface OrderService {
     List<OrderDTO> getOrdersWithFilter(BigDecimal priceFrom, BigDecimal priceTo, String statusOrder, User user,
                                        Integer page, Integer size, String sortField, String sortDir);
     boolean deleteItem(Long cartId, User user, HttpSession session);
+    boolean changeCount(Long cartId, Integer count, User user, HttpSession session);
 }

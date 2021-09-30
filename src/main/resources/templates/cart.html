@@ -32,8 +32,8 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" th:text="${cart.count}"></span>
                         </div>
-                        <input type="number" th:value="${cart.count}" name="count">
-                        <input name="itemId" th:value="${cart.id}" hidden>
+                        <input name="count" th:value="${cart.count}" type="number" min="1">
+                        <input name="cartId" th:value="${cart.id}" hidden>
                         <button class="btn btn-outline-primary" type="submit">Змінити</button>
                     </div>
                 </form>

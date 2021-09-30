@@ -41,10 +41,4 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             @Param("statusOrder") StatusOrder statusOrder
     );
 
-    @Query("select o from Order o " +
-            "where o.totalPrice between :priceFrom and :priceTo " +
-            "and o.user is null " +
-            "and o.status = :statusOrder " +
-            "group by o")
-    Page<Order> findAllWithFilterUnregisterUser(Pageable pageable, BigDecimal priceFrom, BigDecimal priceTo, StatusOrder status);
 }

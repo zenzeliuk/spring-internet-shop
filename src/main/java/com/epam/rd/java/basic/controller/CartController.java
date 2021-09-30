@@ -72,5 +72,16 @@ public class CartController {
         }
     }
 
+    @PostMapping("/change-count")
+    public String count(@RequestParam(name = "cartId") Long cartId,
+                        @RequestParam(name = "count") Integer count,
+                        @AuthenticationPrincipal User user,
+                        HttpSession session) {
+        if (orderService.changeCount(cartId, count, user, session)) {
+            return "redirect:/carts";
+        } else {
+            return "redirect:/error";
+        }
+    }
 
 }
