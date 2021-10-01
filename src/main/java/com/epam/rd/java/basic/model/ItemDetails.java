@@ -1,12 +1,15 @@
 package com.epam.rd.java.basic.model;
 
 import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Getter
 @Setter
+@ToString
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,6 +22,7 @@ public class ItemDetails implements Serializable {
 
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
+    @ToString.Exclude
     private Item item;
 
     @ManyToOne
@@ -33,4 +37,16 @@ public class ItemDetails implements Serializable {
     @JoinColumn(name = "color_id")
     private Color color;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        ItemDetails that = (ItemDetails) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return 0;
+    }
 }

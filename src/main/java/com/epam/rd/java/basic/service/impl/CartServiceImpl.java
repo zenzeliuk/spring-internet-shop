@@ -132,12 +132,11 @@ public class CartServiceImpl implements CartService {
                 return false;
             }
             Optional<Order> optionalOrder = orderRepository.findById(orderFromSession.getId());
-            changeCountCart(count, cart, optionalOrder);
+            return changeCountCart(count, cart, optionalOrder);
         } else {
             Optional<Order> optionalOrder = orderRepository.findOrderByStatusAndUser(StatusOrder.OPEN, user);
-            changeCountCart(count, cart, optionalOrder);
+            return changeCountCart(count, cart, optionalOrder);
         }
-        return true;
     }
 
     private boolean changeCountCart(Integer count, Cart cart, Optional<Order> optionalOrder) {
@@ -157,6 +156,17 @@ public class CartServiceImpl implements CartService {
         return true;
     }
 
+    private Cart getCart(Long cartId) {
+        Optional<Cart> cartOptional = cartRepository.findById(cartId);
+        Cart cart;
+        if (cartOptional.isEmpty()) {
+            return null;
+        } else {
+            cart = cartOptional.get();
+        }
+        return cart;
+    }
+
     @Override
     public boolean deleteItem(Long cartId, User user, HttpSession session) {
         Cart cart = getCart(cartId);
@@ -174,16 +184,6 @@ public class CartServiceImpl implements CartService {
         }
     }
 
-    private Cart getCart(Long cartId) {
-        Optional<Cart> cartOptional = cartRepository.findById(cartId);
-        Cart cart;
-        if (cartOptional.isEmpty()) {
-            return null;
-        } else {
-            cart = cartOptional.get();
-        }
-        return cart;
-    }
 
     private boolean deleteCartFromOrder(Cart cart, Optional<Order> optionalOrder, HttpSession session) {
         if (optionalOrder.isEmpty()) {

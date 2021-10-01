@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -47,4 +48,16 @@ public class Order implements Serializable {
     @Enumerated(EnumType.STRING)
     private StatusOrder status;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return Objects.equals(id, order.id) && Objects.equals(createTime, order.createTime) && Objects.equals(updateTime, order.updateTime) && Objects.equals(totalPrice, order.totalPrice) && Objects.equals(user, order.user) && status == order.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, createTime, updateTime, totalPrice, user, status);
+    }
 }
