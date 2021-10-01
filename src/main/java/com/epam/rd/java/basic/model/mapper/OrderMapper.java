@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class OrderMapper {
@@ -29,10 +30,10 @@ public class OrderMapper {
     }
 
     private static BigDecimal getPrice(Order order) {
-        if (order.getTotalPrice() != BigDecimal.ZERO) {
-            return order.getTotalPrice();
-        } else {
+        if (order.getTotalPrice() == null || Objects.equals(order.getTotalPrice(), BigDecimal.ZERO)) {
             return Helper.getTotalPrice(order.getCarts());
+        } else {
+            return order.getTotalPrice();
         }
     }
 
