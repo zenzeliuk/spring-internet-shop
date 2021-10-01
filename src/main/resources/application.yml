@@ -6,15 +6,6 @@ spring:
     hibernate:
       ddl-auto: validate
     show-sql: false
-#  flyway:
-#    baseline-on-migrate: true
-#    check-location: true
-#    locations: filesystem:db/migration
-#    schemas: public
-#    enabled: true
-  #    properties:
-#      hibernate:
-#        format_sql: true
   datasource:
     url: "jdbc:mysql://localhost:3306/shop-spring"
     username: "root"
